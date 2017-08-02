@@ -46,7 +46,6 @@ truffle migrate
 You should see output like:
 
 ```Using network 'development'.
-
 Running migration: 1_initial_migration.js
   Deploying Migrations...
   Migrations: 0xf06039885460a42dcc8db5b285bb925c55fbaeae
