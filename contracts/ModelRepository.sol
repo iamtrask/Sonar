@@ -39,6 +39,13 @@ contract ModelRepository {
 
   }
 
+  function transferAmount(address reciever, uint amount){
+        
+    if(!reciever.send(amount)){
+      throw;
+    }
+   }
+
   function addModel(bytes32[] _weights, uint initial_error, uint target_error) payable returns(uint256 model_index) {
 
     IPFS memory weights;
@@ -64,16 +71,24 @@ contract ModelRepository {
   function evalGradient(uint _gradient_id, uint _new_model_error, bytes32[] _new_weights_addr) returns (bool success) {
     // TODO: replace with modifier so that people can't waste gas
     Model model = models[grads[_gradient_id].model_id];
-
+    uint amount;
     if(grads[_gradient_id].evaluated == false && msg.sender == model.owner) {
 
       grads[_gradient_id].new_weights.first = _new_weights_addr[0];
       grads[_gradient_id].new_weights.second = _new_weights_addr[1];
       grads[_gradient_id].new_model_error = _new_model_error;
 
+      
+      //transferAmount(grads[_gradient_id].from,1);
+
       if(_new_model_error < model.best_error) {
+        
+        //incentive calculation
+        amount = ((model.best_error - _new_model_error) * model.bounty) / model.best_error;
+
         model.best_error = _new_model_error;
         model.weights = grads[_gradient_id].new_weights;
+        transferAmount(grads[_gradient_id].from,amount);
       }
 
       grads[_gradient_id].evaluated = true;
