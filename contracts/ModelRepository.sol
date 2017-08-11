@@ -39,11 +39,12 @@ contract ModelRepository {
 
   }
 
-  function transfer(address reciever, uint amount){
+  function transferAmount(address reciever, uint amount){
+        
     if(!reciever.send(amount)){
       throw;
     }
-  }
+   }
 
   function addModel(bytes32[] _weights, uint initial_error, uint target_error) payable returns(uint256 model_index) {
 
@@ -77,15 +78,17 @@ contract ModelRepository {
       grads[_gradient_id].new_weights.second = _new_weights_addr[1];
       grads[_gradient_id].new_model_error = _new_model_error;
 
+      
+      //transferAmount(grads[_gradient_id].from,1);
+
       if(_new_model_error < model.best_error) {
         
         //incentive calculation
-        amount = ((model.best_error - _new_model_error) / model.best_error) * model.bounty;
+        amount = ((model.best_error - _new_model_error) * model.bounty) / model.best_error;
 
         model.best_error = _new_model_error;
         model.weights = grads[_gradient_id].new_weights;
-
-        transfer(grads[_gradient_id].from,amount);
+        transferAmount(grads[_gradient_id].from,amount);
       }
 
       grads[_gradient_id].evaluated = true;
