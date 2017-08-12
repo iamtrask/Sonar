@@ -1,6 +1,5 @@
-FROM node:alpine
-RUN ["npm", "install", "-g", "truffle"]
-COPY . /truffle
-WORKDIR /truffle
-RUN ["truffle", "compile"]
-CMD ["truffle", "migrate"]
+FROM node:8-alpine
+RUN npm install -g ethereumjs-testrpc
+COPY build/testrpc_persist /data/persist
+EXPOSE 8545
+CMD [ "testrpc","--db","/data/persist","--seed","20170812","--accounts","42"]
