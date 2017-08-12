@@ -1,5 +1,6 @@
 FROM node:8-alpine
-RUN npm install -g ethereumjs-testrpc
-COPY build/testrpc_persist /data/persist
+RUN npm install -g ethereumjs-testrpc truffle
+COPY init_testrpc.sh init_testrpc.sh
+RUN sh init_testrpc.sh
 EXPOSE 8545
-CMD [ "testrpc","--db","/data/persist","--seed","20170812","--accounts","42"]
+CMD [ "testrpc","--db","/data/testrpc_persist","--seed","20170812","--accounts","42"]

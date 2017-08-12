@@ -3,7 +3,7 @@
 # requires a node runtime
 set -e
 
-RPC_FOLDER="./build/testrpc_persist"
+RPC_FOLDER="data/testrpc_persist"
 
 # make sure testrpc starts with an empty data directory
 rm -rf ${RPC_FOLDER} && mkdir -p ${RPC_FOLDER}
@@ -14,7 +14,7 @@ npm i ethereumjs-testrpc truffle > /dev/null
 
 # start testrpc
 echo "Starting testrpc.."
-node_modules/.bin/testrpc --db ./build/testrpc_persist --accounts 42 --seed 20170812 > /dev/null & 
+node_modules/.bin/testrpc --db ${RPC_FOLDER} --accounts 42 --seed 20170812 > /dev/null & 
 PID_RPC=$!
 sleep 3 # wait for testrpc to fully start
 
