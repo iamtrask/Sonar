@@ -16,5 +16,5 @@ For local builds:
 
 ```sh
 sh init_testrpc.sh
-docker build -t sonar .
+docker build -t sonar-testrpc -f Dockerfile.testrpc .
 ```
