@@ -82,10 +82,10 @@
     "default": {
       "links": {},
       "events": {},
-      "updated_at": 1502560525021,
+      "updated_at": 1502828115179,
       "address": "0xd15e84007787eacf4a24ad29347b406bd7e08ef7"
     }
   },
   "schema_version": "0.0.5",
-  "updated_at": 1502560525021
+  "updated_at": 1502828115179
 }
