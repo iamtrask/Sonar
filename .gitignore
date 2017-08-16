@@ -2,5 +2,4 @@
 node_modules/
 package.json
 package-lock.json
-build/testrpc_persist
 data/
