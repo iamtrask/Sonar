@@ -1,0 +1,9 @@
+FROM node:8-alpine
+RUN npm install -g ethereumjs-testrpc truffle
+COPY truffle.js init_testrpc.sh ./
+COPY contracts/ ./contracts/
+COPY migrations/ ./migrations/
+WORKDIR ./
+RUN sh init_testrpc.sh
+EXPOSE 8545
+CMD [ "testrpc","--host", "0.0.0.0", "--db","/data/testrpc_persist","--seed","20170812","--accounts","42"]

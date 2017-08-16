@@ -2,6 +2,30 @@
 
 > Federated Deep Learning on the Ethereum Blockchain
 
+## Docker
+
+https://hub.docker.com/r/openmined/sonar/
+
+We prepared a dockerized version of the Sonar smart contract already running on `testrpc`. To start it just run
+
+```sh
+docker run -d -p 8545:8545 openmined/sonar-testrpc:edge
+# :edge for the latest dev build
+# :latest (default) for stable builds
+```
+
+The current contract address in this image is `0xdde11dad6a87e03818aea3fde7b790b644353ccc` 
+In addition there are `42` bootstrapped accounts with `100 ETH` each.
+
+Everytime you restart the docker container all interactions to the chain will be reset and you will have a clean image (with nothinb but the contract).
+
+### Docker creation
+
+There are two docker files in this repository. `Dockerfile` creates a plain Sonar container ([openmined/sonar](https://hub.docker.com/r/openmined/sonar
+)) with just the compiled contract in it. `Dockerfile.testrpc` creates the [openmined/sonar-testrpc](https://hub.docker.com/r/openmined/sonar-testrpc) image with the contract pre-deployed on `testrpc`.
+
+## Manual setup
+
 ### truffle
 
 Truffle is required to compile the contracts in this repo:
@@ -10,7 +34,8 @@ Truffle is required to compile the contracts in this repo:
 ### compile and deploy local libraries
 
 First you need to start the testrpc
-```# run local ethereum mock
+```
+# run local ethereum mock
 testrpc -a 1000
 ```
 
@@ -22,7 +47,8 @@ truffle migrate
 
 You should see output like:
 
-```Using network 'development'.
+```sh
+Using network 'development'.
 Running migration: 1_initial_migration.js
   Deploying Migrations...
   Migrations: 0xf06039885460a42dcc8db5b285bb925c55fbaeae
