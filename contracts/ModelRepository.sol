@@ -122,6 +122,25 @@ contract ModelRepository {
     return grads.length-1;
   }
 
+  function latestMiners(uint model_id, uint count) constant returns(address[]) {
+    address[] miners;
+    if (count > 100) {
+      count = 100;
+    } else if (count < 1) {
+      count = 1;
+    }
+    if (count > grads.length) {
+      count = grads.length;
+    }
+
+    for (uint i = 0 ; i < grads.length && miners.length < count; i++) {
+      if (grads[i].model_id == model_id) {
+        miners.push(grads[i].from);
+      }
+    }
+    return miners;
+  }
+
   function getNumModels() constant returns(uint256 model_cnt) {
     return models.length;
   }
