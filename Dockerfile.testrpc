@@ -1,6 +1,5 @@
 FROM node:8-alpine
-RUN npm install -g ethereumjs-testrpc truffle
-COPY truffle.js init_testrpc.sh ./
+COPY package.json truffle.js init_testrpc.sh ./
 COPY contracts/ ./contracts/
 COPY migrations/ ./migrations/
 WORKDIR ./
