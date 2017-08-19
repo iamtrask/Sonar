@@ -11,7 +11,6 @@ rm -rf ${RPC_FOLDER} && mkdir -p ${RPC_FOLDER}
 # install testrpc 
 echo "Installing node dependencies.."
 npm i > /dev/null
-npm i -g ethereumjs-testrpc > /dev/null
 
 # start testrpc
 echo "Starting testrpc.."
