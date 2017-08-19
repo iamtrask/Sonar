@@ -26,10 +26,9 @@ There are two docker files in this repository. `Dockerfile` creates a plain Sona
 
 ## Manual setup
 
-### truffle
+### Install dependencies
 
-Truffle is required to compile the contracts in this repo:
-```npm install -g truffle```
+```npm install```
 
 ### compile and deploy local libraries
 
@@ -41,8 +40,7 @@ testrpc -a 1000
 
 Then, compile the contracts and load them onto the blockchain.
 ```
-truffle compile
-truffle migrate
+npm run deploy
 ```
 
 You should see output like:

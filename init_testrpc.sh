@@ -10,7 +10,8 @@ rm -rf ${RPC_FOLDER} && mkdir -p ${RPC_FOLDER}
 
 # install testrpc 
 echo "Installing node dependencies.."
-npm i ethereumjs-testrpc truffle > /dev/null
+npm i
+npm i ethereumjs-testrpc > /dev/null
 
 # start testrpc
 echo "Starting testrpc.."
@@ -24,7 +25,7 @@ node_modules/.bin/truffle compile > /dev/null
 
 echo "Deploy contract to testrpc.."
 # TODO: Figure out how to grep/awk the modelrepository from here..
-truffle migrate
+npm run deploy
 
 echo "Cleanup.."
 kill $PID_RPC
