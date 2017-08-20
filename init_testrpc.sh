@@ -14,7 +14,7 @@ npm i > /dev/null
 
 # start testrpc
 echo "Starting testrpc.."
-node_modules/.bin/testrpc --db ${RPC_FOLDER} --accounts 42 --seed 20170812 > /dev/null & 
+node_modules/.bin/testrpc --db ${RPC_FOLDER} --accounts 1000 --seed 20170812 > /dev/null & 
 PID_RPC=$!
 sleep 3 # wait for testrpc to fully start
 
