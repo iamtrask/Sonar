@@ -18,11 +18,7 @@ node_modules/.bin/testrpc --db ${RPC_FOLDER} --accounts 42 --seed 20170812 > /de
 PID_RPC=$!
 sleep 3 # wait for testrpc to fully start
 
-# compile contract
-echo "Compile Sonar contract.."
-node_modules/.bin/truffle compile > /dev/null
-
-echo "Deploy contract to testrpc.."
+echo "Compile and deploy Sonar contract.."
 # TODO: Figure out how to grep/awk the modelrepository from here..
 npm run deploy
 
