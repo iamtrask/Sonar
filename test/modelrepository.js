@@ -7,7 +7,7 @@ const hexToString = hexString => {
 contract('ModelRepository', accounts => {
   const ulyssesTheUser = accounts[0]
 
-  it('allows anyone to add a model', () => {
+  it('allows anyone to add a model', async () => {
     const ipfsHash = 'QmWmyoMoctfbAaiEs2G46gpeUmhqFRDW6KWo64y5r581Vz'
     const twoPartIpfsHash = [
       ipfsHash.substring(0, 32),
@@ -17,22 +17,18 @@ contract('ModelRepository', accounts => {
     const initialError = 42
     const targetError = 1337
 
-    let modelRepositoryContract;
-    return ModelRepository.deployed().then(instance => {
-      modelRepositoryContract = instance;
-      return modelRepositoryContract.addModel(twoPartIpfsHash, initialError, targetError, {
+    const modelRepositoryContract = await ModelRepository.deployed();
+    await modelRepositoryContract.addModel(twoPartIpfsHash, initialError, targetError, {
         from: ulyssesTheUser,
         value: bountyInWei
-      })
-    }).then(() => {
-      return modelRepositoryContract.getModel.call(0)
-    }).then(model => {
-      assert.equal(model[0], ulyssesTheUser, 'owner persisted')
-      assert.equal(model[1], bountyInWei, 'bounty persisted')
-      assert.equal(model[2], initialError, 'initial_error persisted')
-      assert.equal(model[3], targetError, 'target_error persisted')
-      assert.equal(hexToString(model[4][0]), twoPartIpfsHash[0], 'ipfshash persisted')
-      assert.equal(hexToString(model[4][1]), twoPartIpfsHash[1], 'ipfshash persisted')
     })
+
+    const model = await modelRepositoryContract.getModel.call(0)
+    assert.equal(model[0], ulyssesTheUser, 'owner persisted')
+    assert.equal(model[1], bountyInWei, 'bounty persisted')
+    assert.equal(model[2], initialError, 'initial_error persisted')
+    assert.equal(model[3], targetError, 'target_error persisted')
+    assert.equal(hexToString(model[4][0]), twoPartIpfsHash[0], 'ipfshash persisted')
+    assert.equal(hexToString(model[4][1]), twoPartIpfsHash[1], 'ipfshash persisted')
   })
 })
