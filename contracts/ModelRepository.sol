@@ -46,7 +46,7 @@ contract ModelRepository {
     }
    }
 
-  function addModel(bytes32[] _weights, uint initial_error, uint target_error) payable returns(uint256 model_index) {
+  function addModel(bytes32[] _weights, uint initial_error, uint target_error) payable {
 
     IPFS memory weights;
     weights.first = _weights[0];
@@ -64,8 +64,6 @@ contract ModelRepository {
     newModel.target_error = target_error;
 
     models.push(newModel);
-
-    return models.length-1;
   }
 
   function evalGradient(uint _gradient_id, uint _new_model_error, bytes32[] _new_weights_addr) returns (bool success) {
