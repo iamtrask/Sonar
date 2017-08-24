@@ -7,20 +7,21 @@ const hexToString = hexString => {
 contract('ModelRepository', accounts => {
   const ulyssesTheUser = accounts[0]
 
+  const ipfsHash = 'QmWmyoMoctfbAaiEs2G46gpeUmhqFRDW6KWo64y5r581Vz'
+  const twoPartIpfsHash = [
+    ipfsHash.substring(0, 32),
+    ipfsHash.substr(32) + '0'.repeat(18)
+  ]
+
   it('allows anyone to add a model', async () => {
-    const ipfsHash = 'QmWmyoMoctfbAaiEs2G46gpeUmhqFRDW6KWo64y5r581Vz'
-    const twoPartIpfsHash = [
-      ipfsHash.substring(0, 32),
-      ipfsHash.substr(32) + '0'.repeat(18)
-    ]
     const bountyInWei = 10000
     const initialError = 42
     const targetError = 1337
 
     const modelRepositoryContract = await ModelRepository.deployed();
     await modelRepositoryContract.addModel(twoPartIpfsHash, initialError, targetError, {
-        from: ulyssesTheUser,
-        value: bountyInWei
+      from: ulyssesTheUser,
+      value: bountyInWei
     })
 
     const model = await modelRepositoryContract.getModel.call(0)
@@ -30,5 +31,22 @@ contract('ModelRepository', accounts => {
     assert.equal(model[3], targetError, 'target_error persisted')
     assert.equal(hexToString(model[4][0]), twoPartIpfsHash[0], 'ipfshash persisted')
     assert.equal(hexToString(model[4][1]), twoPartIpfsHash[1], 'ipfshash persisted')
+  })
+
+  it('allows anyone to add a gradient', async () => {
+    const modelRepositoryContract = await ModelRepository.deployed();
+    await modelRepositoryContract.addGradient(0, twoPartIpfsHash, {
+      from: ulyssesTheUser
+    })
+
+    const gradient = await modelRepositoryContract.getGradient.call(0, 0)
+
+    assert.equal(gradient[0], 0, 'has an id')
+    assert.equal(gradient[1], ulyssesTheUser, 'has a creator')
+    assert.equal(hexToString(gradient[2][0]), twoPartIpfsHash[0], 'ipfshash persisted')
+    assert.equal(hexToString(gradient[2][1]), twoPartIpfsHash[1], 'ipfshash persisted')
+    assert.equal(gradient[3], 0, 'error defaults to 0')
+    assert.equal(gradient[4][0], 0, 'weights are initially 0')
+    assert.equal(gradient[4][1], 0, 'weights are initially 0')
   })
 })
