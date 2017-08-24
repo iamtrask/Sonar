@@ -4,16 +4,19 @@ const hexToString = hexString => {
   return new Buffer(hexString.replace('0x', ''), 'hex').toString()
 }
 
-contract('ModelRepository', accounts => {
-  const ulyssesTheUser = accounts[0]
-
-  const ipfsHash = 'QmWmyoMoctfbAaiEs2G46gpeUmhqFRDW6KWo64y5r581Vz'
-  const twoPartIpfsHash = [
+const splitIpfsHashInMiddle = ipfsHash => {
+  return [
     ipfsHash.substring(0, 32),
     ipfsHash.substr(32) + '0'.repeat(18)
   ]
+}
+
+contract('ModelRepository', accounts => {
+  const ulyssesTheUser = accounts[0]
 
   it('allows anyone to add a model', async () => {
+    const twoPartIpfsHash = splitIpfsHashInMiddle('QmWmyoMoctfbAaiEs2G46gpeUmhqFRDW6KWo64y5r581Vz')
+
     const bountyInWei = 10000
     const initialError = 42
     const targetError = 1337
@@ -34,6 +37,8 @@ contract('ModelRepository', accounts => {
   })
 
   it('allows anyone to add a gradient', async () => {
+    const twoPartIpfsHash = splitIpfsHashInMiddle('QmWmroMoctfbAaiEs2G46gpeUmhqFRDW6KWo64y5r581Vz')
+
     const modelRepositoryContract = await ModelRepository.deployed();
     await modelRepositoryContract.addGradient(0, twoPartIpfsHash, {
       from: ulyssesTheUser
