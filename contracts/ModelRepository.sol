@@ -95,7 +95,7 @@ contract ModelRepository {
     return true;
   }
 
-  function addGradient(uint model_id, bytes32[] _grad_addr) returns(uint256 grad_index) {
+  function addGradient(uint model_id, bytes32[] _grad_addr) {
 
     IPFS memory grad_addr;
     grad_addr.first = _grad_addr[0];
@@ -113,11 +113,7 @@ contract ModelRepository {
     newGrad.new_weights = new_weights;
     newGrad.evaluated=false;
 
-
-
     grads.push(newGrad);
-
-    return grads.length-1;
   }
 
   function getNumModels() constant returns(uint256 model_cnt) {
