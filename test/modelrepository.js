@@ -37,21 +37,38 @@ contract('ModelRepository', accounts => {
   })
 
   it('allows anyone to add a gradient', async () => {
-    const twoPartIpfsHash = splitIpfsHashInMiddle('QmWmroMoctfbAaiEs2G46gpeUmhqFRDW6KWo64y5r581Vz')
-
+    const twoPartIpfsHash = splitIpfsHashInMiddle('QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG')
     const modelRepositoryContract = await ModelRepository.deployed();
-    await modelRepositoryContract.addGradient(0, twoPartIpfsHash, {
+    const modelId = 0
+    await modelRepositoryContract.addGradient(modelId, twoPartIpfsHash, {
       from: ulyssesTheUser
     })
 
-    const gradient = await modelRepositoryContract.getGradient.call(0, 0)
+    const gradientId = 0
+    const gradient = await modelRepositoryContract.getGradient.call(modelId, gradientId)
 
-    assert.equal(gradient[0], 0, 'has an id')
+    assert.equal(gradient[0], gradientId, 'has an id')
     assert.equal(gradient[1], ulyssesTheUser, 'has a creator')
     assert.equal(hexToString(gradient[2][0]), twoPartIpfsHash[0], 'ipfshash persisted')
     assert.equal(hexToString(gradient[2][1]), twoPartIpfsHash[1], 'ipfshash persisted')
     assert.equal(gradient[3], 0, 'error defaults to 0')
     assert.equal(gradient[4][0], 0, 'weights are initially 0')
     assert.equal(gradient[4][1], 0, 'weights are initially 0')
+  })
+
+  it('will not add gradients to models which do not exist', async () => {
+    const twoPartIpfsHash = splitIpfsHashInMiddle('QmWmraMoctfbAaiEs2G46gpeUmhqFRDW6KWo64y5r581Vz')
+    const modelRepositoryContract = await ModelRepository.deployed();
+    const modelWhichDoesntExist = 1
+
+    try {
+      await modelRepositoryContract.addGradient(modelWhichDoesntExist, twoPartIpfsHash, {
+        from: ulyssesTheUser
+      })
+    } catch (error) {
+      assert.ok(error)
+      return;
+    }
+    assert.fail()
   })
 })

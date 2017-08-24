@@ -93,7 +93,7 @@ contract ModelRepository {
   }
 
   function addGradient(uint model_id, bytes32[] _grad_addr) {
-
+    require(models[model_id].owner != 0);
     IPFS memory grad_addr;
     grad_addr.first = _grad_addr[0];
     grad_addr.second = _grad_addr[1];
