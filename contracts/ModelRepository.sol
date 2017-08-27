@@ -63,7 +63,7 @@ contract ModelRepository {
     models.push(newModel);
   }
 
-  function evalGradient(uint _gradient_id, uint _new_model_error, bytes32[] _new_weights_addr) returns (bool success) {
+  function evalGradient(uint _gradient_id, uint _new_model_error, bytes32[] _new_weights_addr) {
     // TODO: replace with modifier so that people can't waste gas
     Model model = models[grads[_gradient_id].model_id];
     uint amount;
@@ -88,8 +88,6 @@ contract ModelRepository {
 
       grads[_gradient_id].evaluated = true;
     }
-
-    return true;
   }
 
   function addGradient(uint model_id, bytes32[] _grad_addr) {
