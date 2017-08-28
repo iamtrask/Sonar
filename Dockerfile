@@ -1,6 +1,5 @@
 FROM node:alpine
 RUN ["npm", "install", "-g", "truffle"]
-COPY . /truffle
-WORKDIR /truffle
+COPY . /sonar
+WORKDIR /sonar
 RUN ["truffle", "compile"]
-CMD ["truffle", "migrate"]

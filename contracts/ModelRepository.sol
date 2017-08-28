@@ -40,13 +40,10 @@ contract ModelRepository {
   }
 
   function transferAmount(address reciever, uint amount){
-        
-    if(!reciever.send(amount)){
-      throw;
-    }
-   }
+    assert(reciever.send(amount));
+  }
 
-  function addModel(bytes32[] _weights, uint initial_error, uint target_error) payable returns(uint256 model_index) {
+  function addModel(bytes32[] _weights, uint initial_error, uint target_error) payable {
 
     IPFS memory weights;
     weights.first = _weights[0];
@@ -64,8 +61,6 @@ contract ModelRepository {
     newModel.target_error = target_error;
 
     models.push(newModel);
-
-    return models.length-1;
   }
 
   function evalGradient(uint _gradient_id, uint _new_model_error, bytes32[] _new_weights_addr) returns (bool success) {
@@ -97,8 +92,8 @@ contract ModelRepository {
     return true;
   }
 
-  function addGradient(uint model_id, bytes32[] _grad_addr) returns(uint256 grad_index) {
-
+  function addGradient(uint model_id, bytes32[] _grad_addr) {
+    require(models[model_id].owner != 0);
     IPFS memory grad_addr;
     grad_addr.first = _grad_addr[0];
     grad_addr.second = _grad_addr[1];
@@ -115,11 +110,7 @@ contract ModelRepository {
     newGrad.new_weights = new_weights;
     newGrad.evaluated=false;
 
-
-
     grads.push(newGrad);
-
-    return grads.length-1;
   }
 
   function getNumModels() constant returns(uint256 model_cnt) {

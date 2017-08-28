@@ -1,0 +1,28 @@
+{
+  "name": "sonar",
+  "version": "0.0.1",
+  "description": "Federated Deep Learning on the Ethereum Blockchain",
+  "private": true,
+  "scripts": {
+    "test": "./node_modules/.bin/truffle test",
+    "deploy": "./node_modules/.bin/truffle migrate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OpenMined/Sonar.git"
+  },
+  "engine": {
+    "node": "^8.0.0",
+    "npm": ">5.0.0"
+  },
+  "author": "OpenMined",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/OpenMined/Sonar/issues"
+  },
+  "homepage": "https://github.com/OpenMined/Sonar#readme",
+  "devDependencies": {
+    "truffle": "3.4.9",
+    "ethereumjs-testrpc": "^4.0.0"
+  }
+}
