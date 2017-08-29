@@ -137,7 +137,7 @@ contract ModelRepository {
           _new_weghts_addr[0] = grads[i].new_weights.first;
           _new_weghts_addr[1] = grads[i].new_weights.second;
 
-          return (i, grads[i].from,_grad_addr,grads[i].new_model_error, _new_weghts_addr);
+          return (i, grads[i].from, _grad_addr, grads[i].new_model_error, _new_weghts_addr);
         }
         num += 1;
       }

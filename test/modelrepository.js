@@ -11,12 +11,12 @@ const splitIpfsHashInMiddle = ipfsHash => {
   ]
 }
 
+const twoPartIpfsHash = splitIpfsHashInMiddle('QmWmyoMoctfbAaiEs2G46gpeUmhqFRDW6KWo64y5r581Vz')
+
 contract('ModelRepository', accounts => {
   const ulyssesTheUser = accounts[0]
 
   it('allows anyone to add a model', async () => {
-    const twoPartIpfsHash = splitIpfsHashInMiddle('QmWmyoMoctfbAaiEs2G46gpeUmhqFRDW6KWo64y5r581Vz')
-
     const bountyInWei = 10000
     const initialError = 42
     const targetError = 1337
@@ -58,7 +58,7 @@ contract('ModelRepository', accounts => {
 
   it('will not add gradients to models which do not exist', async () => {
     const twoPartIpfsHash = splitIpfsHashInMiddle('QmWmraMoctfbAaiEs2G46gpeUmhqFRDW6KWo64y5r581Vz')
-    const modelRepositoryContract = await ModelRepository.deployed();
+    const modelRepositoryContract = await ModelRepository.deployed()
     const modelWhichDoesntExist = 1
 
     try {
@@ -67,8 +67,49 @@ contract('ModelRepository', accounts => {
       })
     } catch (error) {
       assert.ok(error)
-      return;
+      return
     }
     assert.fail()
+  })
+
+  it('allows to evaluate gradients by the model owner', async () => {
+    const irrelevantWeights = splitIpfsHashInMiddle('QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG')
+    const modelRepositoryContract = await ModelRepository.deployed()
+    await modelRepositoryContract.evalGradient(0, 0, irrelevantWeights)
+  })
+})
+
+contract('ModelRepository - Evaluating Gradients', accounts => {
+  const oscarTheModelOwner = accounts[0]
+  const patTheGradientProvider = accounts[1]
+
+  it('will not evaluate the same gradient twice', async () => {
+    const bountyInWei = 10000
+    const initialError = 42
+    const targetError = 1337
+    const modelRepositoryContract = await ModelRepository.deployed();
+    await modelRepositoryContract.addModel(twoPartIpfsHash, initialError, targetError, {
+      from: oscarTheModelOwner,
+      value: bountyInWei
+    })
+    const modelId = 0
+    await modelRepositoryContract.addGradient(modelId, twoPartIpfsHash, {
+      from: patTheGradientProvider
+    })
+    const updatedWeights = splitIpfsHashInMiddle('QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG')
+
+    const newError = 1;
+    await modelRepositoryContract.evalGradient(0, newError, updatedWeights, {
+      from: oscarTheModelOwner
+    })
+    const newErrorAttempt = 2;
+    const evaluatedGradient = await modelRepositoryContract.getGradient.call(modelId, 0)
+    await modelRepositoryContract.evalGradient(0, newErrorAttempt, updatedWeights, {
+      from: oscarTheModelOwner
+    })
+    const unevaluatedGradient = await modelRepositoryContract.getGradient.call(modelId, 0)
+
+    assert.equal(evaluatedGradient[3], newError, 'new error set')
+    assert.notEqual(unevaluatedGradient[3], newErrorAttempt, 'error not updated')
   })
 })
