@@ -1,4 +1,4 @@
-var ModelRepository = artifacts.require('./ModelRepository.sol')
+const ModelRepository = artifacts.require('./ModelRepository.sol')
 
 const hexToString = hexString => {
   return new Buffer(hexString.replace('0x', ''), 'hex').toString()
@@ -24,21 +24,25 @@ const firstGradient = {
   twoPartIpfsHash: splitIpfsHashInMiddle('QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG')
 }
 
-const addFirstModel = async function(modelRepositoryContract, modelOwner) {
+const addFirstModel = async (modelRepositoryContract, modelOwner) => {
   modelRepositoryContract.addModel(firstModel.twoPartIpfsHash, firstModel.initialError, firstModel.targetError, {
     from: modelOwner,
     value: firstModel.bountyInWei
   })
 }
 
-const addFirstGradientToFirstModel = async function(modelRepositoryContract, gradientProvider) {
+const addFirstGradientToFirstModel = async (modelRepositoryContract, gradientProvider) => {
   modelRepositoryContract.addGradient(firstGradient.id, firstGradient.twoPartIpfsHash, {
     from: gradientProvider
   })
 }
 
-const getFirstGradient = function(modelRepositoryContract) {
+const getFirstGradient = modelRepositoryContract => {
   return modelRepositoryContract.getGradient.call(firstModel.id, firstGradient.id)
+}
+
+const balanceOf = async account => {
+  return web3.eth.getBalance(account)
 }
 
 contract('ModelRepository', accounts => {
@@ -46,7 +50,7 @@ contract('ModelRepository', accounts => {
   const patTheGradientProvider = accounts[1]
 
   it('allows anyone to add a model', async () => {
-    const modelRepositoryContract = await ModelRepository.deployed();
+    const modelRepositoryContract = await ModelRepository.deployed()
     await addFirstModel(modelRepositoryContract, oscarTheModelOwner)
 
     const model = await modelRepositoryContract.getModel.call(firstModel.id)
@@ -59,7 +63,7 @@ contract('ModelRepository', accounts => {
   })
 
   it('allows anyone to add a gradient', async () => {
-    const modelRepositoryContract = await ModelRepository.deployed();
+    const modelRepositoryContract = await ModelRepository.deployed()
     await addFirstGradientToFirstModel(modelRepositoryContract, patTheGradientProvider)
 
     const addedGradient = await getFirstGradient(modelRepositoryContract)
@@ -96,16 +100,16 @@ contract('ModelRepository - Evaluating Gradients', accounts => {
   const patTheGradientProvider = accounts[1]
 
   it('will not evaluate the same gradient twice', async () => {
-    const modelRepositoryContract = await ModelRepository.deployed();
+    const modelRepositoryContract = await ModelRepository.deployed()
     await addFirstModel(modelRepositoryContract, oscarTheModelOwner)
     await addFirstGradientToFirstModel(modelRepositoryContract, patTheGradientProvider)
     const updatedWeights = splitIpfsHashInMiddle('QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG')
 
-    const newError = 1;
-    await modelRepositoryContract.evalGradient(firstGradient.id, newError, updatedWeights, {
+    const errorWorseThanInitial = firstModel.initialError + 1
+    await modelRepositoryContract.evalGradient(firstGradient.id, errorWorseThanInitial, updatedWeights, {
       from: oscarTheModelOwner
     })
-    const newErrorAttempt = 2;
+    const newErrorAttempt = 2
     const evaluatedGradient = await getFirstGradient(modelRepositoryContract)
     const secondAttemptWeights = splitIpfsHashInMiddle('QmYwARJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG')
     await modelRepositoryContract.evalGradient(firstGradient.id, newErrorAttempt, secondAttemptWeights, {
@@ -113,13 +117,31 @@ contract('ModelRepository - Evaluating Gradients', accounts => {
     })
     const evaluatedGradientAfterSecondAttempt = await getFirstGradient(modelRepositoryContract)
 
-    assert.equal(evaluatedGradient[3], newError, 'new error set after first attempt')
+    assert.equal(evaluatedGradient[3], errorWorseThanInitial, 'new error set after first attempt')
     assert.equal(hexToString(evaluatedGradient[4][0]), firstGradient.twoPartIpfsHash[0], 'ipfshash persisted')
     assert.equal(hexToString(evaluatedGradient[4][1]), firstGradient.twoPartIpfsHash[1], 'ipfshash persisted')
-    assert.equal(evaluatedGradientAfterSecondAttempt[3], newError, 'error not updated during second attempt')
+    assert.equal(evaluatedGradientAfterSecondAttempt[3], errorWorseThanInitial, 'error not updated during second attempt')
     assert.equal(hexToString(evaluatedGradientAfterSecondAttempt[4][0]), firstGradient.twoPartIpfsHash[0],
       'weights not updated during second attempt')
     assert.equal(hexToString(evaluatedGradientAfterSecondAttempt[4][1]), firstGradient.twoPartIpfsHash[1],
       'weights not updated during second attempt')
+  })
+
+  it('pays a bounty if new error is less than best error', async () => {
+    const modelRepositoryContract = await ModelRepository.deployed()
+    await modelRepositoryContract.addGradient(firstModel.id, firstGradient.twoPartIpfsHash, {
+      from: patTheGradientProvider
+    })
+    const improvedError = firstModel.initialError - 1
+    const updatedWeights = splitIpfsHashInMiddle('QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG')
+    const balanceBeforeEvaluation = await balanceOf(patTheGradientProvider)
+
+    await modelRepositoryContract.evalGradient(firstGradient.id + 1, improvedError, updatedWeights, {
+      from: oscarTheModelOwner
+    })
+    const balanceAfterEvaluation = await balanceOf(patTheGradientProvider)
+
+    assert.ok(balanceAfterEvaluation.valueOf() > balanceBeforeEvaluation.valueOf(),
+      'gradient provider was paid')
   })
 })
