@@ -107,12 +107,19 @@ contract('ModelRepository - Evaluating Gradients', accounts => {
     })
     const newErrorAttempt = 2;
     const evaluatedGradient = await getFirstGradient(modelRepositoryContract)
-    await modelRepositoryContract.evalGradient(firstGradient.id, newErrorAttempt, updatedWeights, {
+    const secondAttemptWeights = splitIpfsHashInMiddle('QmYwARJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG')
+    await modelRepositoryContract.evalGradient(firstGradient.id, newErrorAttempt, secondAttemptWeights, {
       from: oscarTheModelOwner
     })
-    const unevaluatedGradient = await getFirstGradient(modelRepositoryContract)
+    const evaluatedGradientAfterSecondAttempt = await getFirstGradient(modelRepositoryContract)
 
-    assert.equal(evaluatedGradient[3], newError, 'new error set')
-    assert.notEqual(unevaluatedGradient[3], newErrorAttempt, 'error not updated')
+    assert.equal(evaluatedGradient[3], newError, 'new error set after first attempt')
+    assert.equal(hexToString(evaluatedGradient[4][0]), firstGradient.twoPartIpfsHash[0], 'ipfshash persisted')
+    assert.equal(hexToString(evaluatedGradient[4][1]), firstGradient.twoPartIpfsHash[1], 'ipfshash persisted')
+    assert.equal(evaluatedGradientAfterSecondAttempt[3], newError, 'error not updated during second attempt')
+    assert.equal(hexToString(evaluatedGradientAfterSecondAttempt[4][0]), firstGradient.twoPartIpfsHash[0],
+      'weights not updated during second attempt')
+    assert.equal(hexToString(evaluatedGradientAfterSecondAttempt[4][1]), firstGradient.twoPartIpfsHash[1],
+      'weights not updated during second attempt')
   })
 })
