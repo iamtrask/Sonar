@@ -6,7 +6,8 @@
   "scripts": {
     "test": "truffle test",
     "deploy": "truffle migrate",
-    "postinstall": "truffle compile"
+    "extract-abi": "./bin/extract-abi build/contracts/ModelRepository.json > build/ModelRepository.abi",
+    "postinstall": "truffle compile && npm run extract-abi"
   },
   "repository": {
     "type": "git",
