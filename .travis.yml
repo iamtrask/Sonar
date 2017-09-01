@@ -1,0 +1,6 @@
+language: node_js
+node_js:
+  - "8"
+
+notifications:
+    slack: openmined:vOUE1d9jSb6V7R1r6zrjRD4E
