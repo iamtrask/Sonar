@@ -10,4 +10,4 @@ if (!filepath || !fs.statSync(filepath)) throw new Error(`File does not exist: $
 
 const json = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'))
 
-process.stdout.write(Buffer.from(JSON.stringify(json.abi)) + '\n')
+console.log(JSON.stringify(json.abi))
