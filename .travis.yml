@@ -2,5 +2,12 @@ language: node_js
 node_js:
   - "8"
 
+before_script:
+  - ./node_modules/.bin/testrpc -h '0.0.0.0'&
+  - export TRUFFLE_PID=$!
+
+after_script:
+  - kill $TRUFFLE_PID
+
 notifications:
     slack: openmined:vOUE1d9jSb6V7R1r6zrjRD4E
