@@ -4,8 +4,10 @@
   "description": "Federated Deep Learning on the Ethereum Blockchain",
   "private": true,
   "scripts": {
-    "test": "./node_modules/.bin/truffle test",
-    "deploy": "./node_modules/.bin/truffle migrate"
+    "test": "truffle test",
+    "deploy": "truffle migrate",
+    "extract-abi": "./bin/extract-abi build/contracts/ModelRepository.json > build/ModelRepository.abi",
+    "postinstall": "truffle compile && npm run extract-abi"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+/**
+ * Extract the pure ABI from the contracts.json and pipe it to stdout
+ * Usage: extract-abi build/contracts/mycontract.json > contractabi.json
+ */
+const fs = require('fs')
+
+const filepath = process.argv[2]
+if (!filepath || !fs.statSync(filepath)) throw new Error(`File does not exist: ${filepath}`)
+
+const json = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'))
+
+console.log(JSON.stringify(json.abi))
