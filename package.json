@@ -1,5 +1,5 @@
 {
-  "name": "sonar",
+  "name": "@openmined/sonar",
   "version": "0.0.1",
   "description": "Federated Deep Learning on the Ethereum Blockchain",
   "private": true,
