@@ -4,8 +4,9 @@
   "description": "Federated Deep Learning on the Ethereum Blockchain",
   "private": true,
   "scripts": {
-    "test": "./node_modules/.bin/truffle test",
-    "deploy": "./node_modules/.bin/truffle migrate"
+    "test": "truffle test",
+    "deploy": "truffle migrate",
+    "postinstall": "truffle compile"
   },
   "repository": {
     "type": "git",
