@@ -4,7 +4,9 @@
   "description": "Federated Deep Learning on the Ethereum Blockchain",
   "private": true,
   "scripts": {
-    "test": "truffle test",
+    "lint": "standard",
+    "test:truffle": "truffle test",
+    "test": "npm run lint && npm run test:truffle",
     "deploy": "truffle migrate",
     "extract-abi": "./bin/extract-abi build/contracts/ModelRepository.json > build/ModelRepository.abi",
     "postinstall": "truffle compile && npm run extract-abi"
@@ -25,6 +27,16 @@
   "homepage": "https://github.com/OpenMined/Sonar#readme",
   "devDependencies": {
     "truffle": "3.4.9",
-    "ethereumjs-testrpc": "^4.0.0"
+    "ethereumjs-testrpc": "^4.0.0",
+    "standard": "^10.0.3"
+  },
+  "standard": {
+    "globals": [
+      "it",
+      "assert",
+      "artifacts",
+      "contract",
+      "web3"
+    ]
   }
 }
