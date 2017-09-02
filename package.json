@@ -25,8 +25,10 @@
     "url": "https://github.com/OpenMined/Sonar/issues"
   },
   "homepage": "https://github.com/OpenMined/Sonar#readme",
+  "dependencies": {
+    "truffle": "^3.4.9"
+  },
   "devDependencies": {
-    "truffle": "3.4.9",
     "ethereumjs-testrpc": "^4.0.0",
     "standard": "^10.0.3"
   },
