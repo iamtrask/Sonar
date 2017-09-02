@@ -1,14 +1,14 @@
 module.exports = {
   networks: {
     development: {
-      host: "localhost",
+      host: 'localhost',
       port: 8545,
-      network_id: "default"
+      network_id: 'default'
     },
     docker: {
-      host: "testrpc",
+      host: 'testrpc',
       port: 8545,
       network_id: 25189
     }
   }
-};
+}

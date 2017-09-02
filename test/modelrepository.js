@@ -1,7 +1,7 @@
 const ModelRepository = artifacts.require('./ModelRepository.sol')
 
 const hexToString = hexString => {
-  return new Buffer(hexString.replace('0x', ''), 'hex').toString()
+  return Buffer.from(hexString.replace('0x', ''), 'hex').toString()
 }
 
 const splitIpfsHashInMiddle = ipfsHash => {
@@ -92,7 +92,6 @@ contract('ModelRepository', accounts => {
     }
     assert.fail()
   })
-
 })
 
 contract('ModelRepository - Evaluating Gradients', accounts => {
