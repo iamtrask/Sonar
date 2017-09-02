@@ -4,9 +4,6 @@ node_js:
 
 before_script:
   - ./node_modules/.bin/testrpc -h '0.0.0.0'&
-
-script:
-  - npm run test
   
 notifications:
     slack: openmined:vOUE1d9jSb6V7R1r6zrjRD4E
