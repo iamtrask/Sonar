@@ -1,5 +1,8 @@
 # Sonar
 
+[![Chat on Slack](https://img.shields.io/badge/chat-on%20slack-7A5979.svg)](https://openmined.slack.com/)
+[![Build Status](https://travis-ci.org/OpenMined/Sonar.svg?branch=master)](https://travis-ci.org/OpenMined/Sonar)
+
 > Federated Deep Learning on the Ethereum Blockchain
 
 ## Docker
