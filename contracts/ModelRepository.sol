@@ -40,8 +40,7 @@ contract ModelRepository {
   }
 
   modifier onlyByModelOwner(uint _gradient_id) {
-    Model model = models[grads[_gradient_id].model_id];
-    require(msg.sender == model.owner);
+    require(msg.sender == models[grads[_gradient_id].model_id].owner);
      _;
   }
 
