@@ -116,21 +116,16 @@ contract('ModelRepository - Evaluating Gradients', accounts => {
       from: oscarTheModelOwner
     })
     const newErrorAttempt = 2
-    const evaluatedGradient = await getFirstGradient(modelRepositoryContract)
     const secondAttemptWeights = splitIpfsHashInMiddle('QmYwARJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG')
-    await modelRepositoryContract.evalGradient(firstGradient.id, newErrorAttempt, secondAttemptWeights, {
-      from: oscarTheModelOwner
-    })
-    const evaluatedGradientAfterSecondAttempt = await getFirstGradient(modelRepositoryContract)
-
-    assert.equal(evaluatedGradient[3], errorWorseThanInitial, 'new error set after first attempt')
-    assert.equal(hexToString(evaluatedGradient[4][0]), firstGradient.twoPartIpfsHash[0], 'ipfshash persisted')
-    assert.equal(hexToString(evaluatedGradient[4][1]), firstGradient.twoPartIpfsHash[1], 'ipfshash persisted')
-    assert.equal(evaluatedGradientAfterSecondAttempt[3], errorWorseThanInitial, 'error not updated during second attempt')
-    assert.equal(hexToString(evaluatedGradientAfterSecondAttempt[4][0]), firstGradient.twoPartIpfsHash[0],
-      'weights not updated during second attempt')
-    assert.equal(hexToString(evaluatedGradientAfterSecondAttempt[4][1]), firstGradient.twoPartIpfsHash[1],
-      'weights not updated during second attempt')
+    try {
+      await modelRepositoryContract.evalGradient(firstGradient.id, newErrorAttempt, secondAttemptWeights, {
+        from: oscarTheModelOwner
+      })
+    } catch (error) {
+      assert.ok(error)
+      return
+    }
+    assert.fail()
   })
 
   it('pays a bounty if new error is less than best error', async () => {

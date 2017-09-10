@@ -45,6 +45,11 @@ contract ModelRepository {
      _;
   }
 
+  modifier onlyIfGradientNotYetEvaluated(uint _gradient_id) {
+    require(grads[_gradient_id].evaluated == false);
+    _;
+  }
+
   function transferAmount(address reciever, uint amount){
     assert(reciever.send(amount));
   }
@@ -69,27 +74,23 @@ contract ModelRepository {
     models.push(newModel);
   }
 
-  function evalGradient(uint _gradient_id, uint _new_model_error, bytes32[] _new_weights_addr) onlyByModelOwner(_gradient_id) {
+  function evalGradient(uint _gradient_id, uint _new_model_error, bytes32[] _new_weights_addr) onlyByModelOwner(_gradient_id) onlyIfGradientNotYetEvaluated(_gradient_id) {
+    grads[_gradient_id].new_weights.first = _new_weights_addr[0];
+    grads[_gradient_id].new_weights.second = _new_weights_addr[1];
+    grads[_gradient_id].new_model_error = _new_model_error;
+
+    //transferAmount(grads[_gradient_id].from,1);
+
     Model model = models[grads[_gradient_id].model_id];
-    if(grads[_gradient_id].evaluated == false) {
+    if(_new_model_error < model.best_error) {
+      uint incentive = ((model.best_error - _new_model_error) * model.bounty) / model.best_error;
 
-      grads[_gradient_id].new_weights.first = _new_weights_addr[0];
-      grads[_gradient_id].new_weights.second = _new_weights_addr[1];
-      grads[_gradient_id].new_model_error = _new_model_error;
-
-      
-      //transferAmount(grads[_gradient_id].from,1);
-
-      if(_new_model_error < model.best_error) {
-        uint incentive = ((model.best_error - _new_model_error) * model.bounty) / model.best_error;
-
-        model.best_error = _new_model_error;
-        model.weights = grads[_gradient_id].new_weights;
-        transferAmount(grads[_gradient_id].from, incentive);
-      }
-
-      grads[_gradient_id].evaluated = true;
+      model.best_error = _new_model_error;
+      model.weights = grads[_gradient_id].new_weights;
+      transferAmount(grads[_gradient_id].from, incentive);
     }
+
+    grads[_gradient_id].evaluated = true;
   }
 
   function addGradient(uint model_id, bytes32[] _grad_addr) {
