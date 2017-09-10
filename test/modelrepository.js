@@ -104,7 +104,6 @@ contract('ModelRepository - Evaluating Gradients', accounts => {
   const patTheGradientProvider = accounts[1]
   const gregTheGradientProvider = accounts[2]
 
-
   it('will not evaluate the same gradient twice', async () => {
     const modelRepositoryContract = await ModelRepository.deployed()
     await addFirstModel(modelRepositoryContract, oscarTheModelOwner)
@@ -164,5 +163,4 @@ contract('ModelRepository - Evaluating Gradients', accounts => {
     }
     assert.fail()
   })
-
 })
