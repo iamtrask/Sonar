@@ -20,7 +20,7 @@ docker run -d -p 8545:8545 openmined/sonar-testrpc:edge
 The current contract address in this image is `0xdde11dad6a87e03818aea3fde7b790b644353ccc` 
 In addition there are `42` bootstrapped accounts with `100 ETH` each.
 
-Everytime you restart the docker container all interactions to the chain will be reset and you will have a clean image (with nothinb but the contract).
+Everytime you restart the docker container all interactions to the chain will be reset and you will have a clean image (with nothing but the contract).
 
 ### Docker creation
 
