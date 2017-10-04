@@ -163,4 +163,17 @@ contract('ModelRepository - Evaluating Gradients', accounts => {
     }
     assert.fail()
   })
+
+  it('is not possible to call transferAmount from outside of the contract and steal funds', async () => {
+    const modelRepositoryContract = await ModelRepository.deployed()
+    try {
+      await modelRepositoryContract.transferAmount(gregTheGradientProvider, 100, {
+        from: gregTheGradientProvider
+      })
+    } catch (error) {
+      assert.ok(error)
+      return
+    }
+    assert.fail()
+  })
 })
