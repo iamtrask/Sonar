@@ -39,6 +39,10 @@ contract ModelRepository {
 
   }
 
+ /*
+  * Modifiers
+  */
+     
   modifier onlyByModelOwner(uint _gradient_id) {
     require(msg.sender == models[grads[_gradient_id].model_id].owner);
      _;
@@ -48,7 +52,11 @@ contract ModelRepository {
     require(grads[_gradient_id].evaluated == false);
     _;
   }
-
+  
+  /*
+   * Public functions
+   */
+   
   function transferAmount(address reciever, uint amount){
     assert(reciever.send(amount));
   }
