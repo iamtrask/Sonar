@@ -16,11 +16,6 @@ Download the [binaries](https://github.com/tendermint/ethermint/releases/tag/v0.
 unzip -d /usr/local/bin ${the name of the ethermint binary}.zip 
 ```
 
-### Docker
-We are currently building docker images for both [ethermint](https://hub.docker.com/r/adrianbrink/ethermint/) and [tendermint](https://hub.docker.com/r/adrianbrink/tendermint/). There are images for versioned releases, builds of master and builds of develop.
-
-// TODO: Add example of how to get a node up and running using docker
-
 ### Source
 Ethermint builds with go1.8.3 and hence go1.8.3 needs to be installed. In order to manage your go installation we recommend [GVM](https://github.com/moovweb/gvm).
 
@@ -39,6 +34,10 @@ make install
 This will download all the necessary dependencies and install ethermint in your $PATH.
 
 
+
+
+## Starting Ethermint
+
 ### Tendermint
 Ethermint relies on the [Tendermint](https://github.com/tendermint/tendermint) executable to provide the networking and consensus engines.
 
@@ -50,11 +49,6 @@ cd $GOPATH/src/github.com/tendermint/tendermint
 make install
 ```
 This will download all the necessary dependencies and install tendermint in your $PATH.
-
-
-----
-
-## Starting Ethermint
 
 ### Initialisation
 To get started, you need to initialise the genesis block for tendermint core and go-ethereum. We provide initialisation
