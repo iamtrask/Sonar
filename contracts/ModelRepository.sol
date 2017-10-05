@@ -49,8 +49,8 @@ contract ModelRepository {
     _;
   }
 
-  function transferAmount(address reciever, uint amount){
-    assert(reciever.send(amount));
+  function transferAmount(address receiver, uint amount) private {
+    assert(receiver.send(amount));
   }
 
   function addModel(bytes32[] _weights, uint initial_error, uint target_error) payable {
