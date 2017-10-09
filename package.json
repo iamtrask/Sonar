@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "ethereumjs-testrpc": "^4.0.0",
+    "solium": "^1.0.0",
     "standard": "^10.0.3"
   },
   "standard": {
