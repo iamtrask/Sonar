@@ -73,6 +73,11 @@ contract ModelRepository {
     models.push(newModel);
   }
 
+  function incentiveCalculate(uint bounty, uint total_error, uint solved_error) returns(uint total) {
+    total = ((bounty/total_error) * solved_error);
+    return total;
+  }
+
   function evalGradient(uint _gradient_id, uint _new_model_error, bytes32[] _new_weights_addr) onlyByModelOwner(_gradient_id) onlyIfGradientNotYetEvaluated(_gradient_id) {
     grads[_gradient_id].new_weights.first = _new_weights_addr[0];
     grads[_gradient_id].new_weights.second = _new_weights_addr[1];
@@ -81,8 +86,11 @@ contract ModelRepository {
     //transferAmount(grads[_gradient_id].from,1);
 
     Model model = models[grads[_gradient_id].model_id];
+    
     if(_new_model_error < model.best_error) {
-      uint incentive = ((model.best_error - _new_model_error) * model.bounty) / model.best_error;
+      uint total_error= model.initial_error - model.target_error;
+      uint solved_error= model.best_error - _new_model_error;
+      incentive = incentiveCalculate(model.bounty, total_error, solved_error);
 
       model.best_error = _new_model_error;
       model.weights = grads[_gradient_id].new_weights;
@@ -91,7 +99,7 @@ contract ModelRepository {
 
     grads[_gradient_id].evaluated = true;
   }
-
+  
   function addGradient(uint model_id, bytes32[] _grad_addr) {
     require(models[model_id].owner != 0);
     IPFS memory grad_addr;
