@@ -5,50 +5,114 @@
 
 > Decentralized Machine Learning Server (via Blockchain)
 
-## Docker
+## Installation
 
-https://hub.docker.com/r/openmined/sonar/
+### Binary Distribution
+This installation involves the downloading of the binaries and subsequently moving them into your $PATH.
 
-We prepared a dockerized version of the Sonar smart contract already running on `testrpc`. To start it just run
+Download the [binaries](https://github.com/tendermint/ethermint/releases/tag/v0.2.2) for your platform on the release page. Open a terminal window and switch into the folder that you downloaded ethermint to.
 
-```sh
-docker run -d -p 8545:8545 openmined/sonar-testrpc:edge
-# :edge for the latest dev build
-# :latest (default) for stable builds
+```bash
+unzip -d /usr/local/bin ${the name of the ethermint binary}.zip 
 ```
 
-The current contract address in this image is `0xdde11dad6a87e03818aea3fde7b790b644353ccc` 
-In addition there are `42` bootstrapped accounts with `100 ETH` each.
+### Source
+Ethermint builds with go1.8.3 and hence go1.8.3 needs to be installed. In order to manage your go installation we recommend [GVM](https://github.com/moovweb/gvm).
 
-Everytime you restart the docker container all interactions to the chain will be reset and you will have a clean image (with nothing but the contract).
-
-### Docker creation
-
-There are two docker files in this repository. `Dockerfile` creates a plain Sonar container ([openmined/sonar](https://hub.docker.com/r/openmined/sonar
-)) with just the compiled contract in it. `Dockerfile.testrpc` creates the [openmined/sonar-testrpc](https://hub.docker.com/r/openmined/sonar-testrpc) image with the contract pre-deployed on `testrpc`.
-
-## Manual setup
-
-### Install dependencies
-
-```npm install```
-
-### compile and deploy local libraries
-
-First you need to start the testrpc
+Once go is installed and configured you can download ethermint.
+```bash
+go get -u -d github.com/tendermint/ethermint
 ```
-# run local ethereum mock
-testrpc -a 1000
+This places the ethermint source code into the appropriate directory in your $GOPATH.
+
+Next you need to switch into the ethermint directory and install it.
+```bash
+cd $GOPATH/src/github.com/tendermint/ethermint
+
+make install
+```
+This will download all the necessary dependencies and install ethermint in your $PATH.
+
+
+
+
+## Starting Ethermint
+
+### Tendermint
+Ethermint relies on the [Tendermint](https://github.com/tendermint/tendermint) executable to provide the networking and consensus engines.
+
+```bash
+go get -u -d github.com/tendermint/tendermint
+
+cd $GOPATH/src/github.com/tendermint/tendermint
+
+make install
+```
+This will download all the necessary dependencies and install tendermint in your $PATH.
+
+### Initialisation
+To get started, you need to initialise the genesis block for tendermint core and go-ethereum. We provide initialisation
+files with reasonable defaults and money allocated into a predefined account. If you installed from binary or docker
+please download these default files [here](https://github.com/tendermint/ethermint/tree/develop/setup).
+
+You can choose where to store the ethermint files with `--datadir`. For this guide, we will use `~/.ethermint`, which is a reasonable default in most cases.
+
+Before you can run ethermint you need to initialise tendermint and ethermint with their respective genesis states.
+Please switch into the folder where you have the initialisation files. If you installed from source you can just follow
+these instructions.
+```bash
+tendermint init --home ~/.ethermint/tendermint
+
+cd $GOPATH/src/github.com/tendermint/ethermint
+
+ethermint --datadir ~/.ethermint init setup/genesis.json
+
+cp -r setup/keystore ~/.ethermint
+```
+In the last step we copy the private key from the initialisation folder into the actual ethereum folder. 
+
+### Running
+To execute ethermint we need to start two processes. The first one is for tendermint, which handles the P2P
+communication as well as the consensus process, while the second one is actually ethermint, which provides the
+go-ethereum functionality.
+
+```bash
+tendermint --home ~/.ethermint/tendermint node
+
+ethermint --datadir ~/.ethermint --rpc --rpcaddr=0.0.0.0 --ws --wsaddr=0.0.0.0 --rpcapi eth,net,web3,personal,admin
 ```
 
-Then, compile the contracts and load them onto the blockchain.
-```
-npm run deploy
-```
+The **password** for the default account is *1234*.
 
+
+----
+
+## Connecting to Ethermint
+Ethermint is fully compatible with the standard go-ethereum tooling such as [geth](https://github.com/ethereum/go-ethereum/wiki/Geth), [mist](https://github.com/ethereum/mist) and [truffle](https://github.com/trufflesuite/truffle). Please
+install whichever tooling suits you best. 
+
+Below we are explaining how to connect these tools to ethermint. For installation instructions please visit the respective projects.
+
+### Geth
+
+```bash
+geth attach http://localhost:8545
+```
+This will drop you into a web3 console.
+
+### Truffle
+Truffle works without any extra arguments.
+
+## Installation
+
+Let's compile the contracts and load them onto the blockchain !!
+
+```bash
+truffle deploy
+```
 You should see output like:
 
-```sh
+```bash
 Using network 'development'.
 Running migration: 1_initial_migration.js
   Deploying Migrations...
@@ -66,3 +130,6 @@ Running migration: 2_deploy_contracts.js
 Saving successful migration to network...
 Saving artifacts...
 ```
+And you're off!
+
+----
