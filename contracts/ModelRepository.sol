@@ -90,7 +90,7 @@ contract ModelRepository {
     if(_new_model_error < model.best_error) {
       uint total_error= model.initial_error - model.target_error;
       uint solved_error= model.best_error - _new_model_error;
-      incentive = incentiveCalculate(model.bounty, total_error, solved_error);
+      uint incentive = incentiveCalculate(model.bounty, total_error, solved_error);
 
       model.best_error = _new_model_error;
       model.weights = grads[_gradient_id].new_weights;
