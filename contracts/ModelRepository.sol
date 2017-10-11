@@ -1,5 +1,6 @@
 pragma solidity ^0.4.4;
 
+
 contract ModelRepository {
 
   Model[] models;
@@ -17,35 +18,34 @@ contract ModelRepository {
     // submitted from miner
     address from;
     IPFS grads;
-    uint model_id;
+    uint modelId;
 
     // submitted from trainer
-    uint new_model_error;
-    IPFS new_weights;
+    uint newModelError;
+    IPFS newWeights;
   }
 
   struct Model {
 
     address owner;
 
-    IPFS init_weights;
+    IPFS initialWeights;
     IPFS weights;
 
     uint bounty;
 
-    uint initial_error;
-    uint best_error;
-    uint target_error;
-
+    uint initialError;
+    uint bestError;
+    uint targetError;
   }
 
-  modifier onlyByModelOwner(uint _gradient_id) {
-    require(msg.sender == models[grads[_gradient_id].model_id].owner);
-     _;
+  modifier onlyByModelOwner(uint gradientId) {
+    require(msg.sender == models[grads[gradientId].modelId].owner);
+    _;
   }
 
-  modifier onlyIfGradientNotYetEvaluated(uint _gradient_id) {
-    require(grads[_gradient_id].evaluated == false);
+  modifier onlyIfGradientNotYetEvaluated(uint gradientId) {
+    require(grads[gradientId].evaluated == false);
     _;
   }
 
@@ -53,112 +53,109 @@ contract ModelRepository {
     assert(receiver.send(amount));
   }
 
-  function addModel(bytes32[] _weights, uint initial_error, uint target_error) payable {
+  function addModel(bytes32[] weights, uint initialError, uint targetError) payable {
 
-    IPFS memory weights;
-    weights.first = _weights[0];
-    weights.second = _weights[1];
+    IPFS memory ipfsWeights;
+    ipfsWeights.first = weights[0];
+    ipfsWeights.second = weights[1];
 
     Model memory newModel;
-    newModel.weights = weights;
-    newModel.init_weights = weights;
+    newModel.weights = ipfsWeights;
+    newModel.initialWeights = ipfsWeights;
 
     newModel.bounty = msg.value;
     newModel.owner = msg.sender;
 
-    newModel.initial_error = initial_error;
-    newModel.best_error = initial_error;
-    newModel.target_error = target_error;
+    newModel.initialError = initialError;
+    newModel.bestError = initialError;
+    newModel.targetError = targetError;
 
     models.push(newModel);
   }
 
-  function evalGradient(uint _gradient_id, uint _new_model_error, bytes32[] _new_weights_addr) onlyByModelOwner(_gradient_id) onlyIfGradientNotYetEvaluated(_gradient_id) {
-    grads[_gradient_id].new_weights.first = _new_weights_addr[0];
-    grads[_gradient_id].new_weights.second = _new_weights_addr[1];
-    grads[_gradient_id].new_model_error = _new_model_error;
+  function evalGradient(uint gradientId, uint newModelError, bytes32[] newWeightsAddress) onlyByModelOwner(gradientId) onlyIfGradientNotYetEvaluated(gradientId) {
+    grads[gradientId].newWeights.first = newWeightsAddress[0];
+    grads[gradientId].newWeights.second = newWeightsAddress[1];
+    grads[gradientId].newModelError = newModelError;
 
-    //transferAmount(grads[_gradient_id].from,1);
+    Model model = models[grads[gradientId].modelId];
+    if (newModelError < model.bestError) {
+      uint incentive = ((model.bestError - newModelError) * model.bounty) / model.bestError;
 
-    Model model = models[grads[_gradient_id].model_id];
-    if(_new_model_error < model.best_error) {
-      uint incentive = ((model.best_error - _new_model_error) * model.bounty) / model.best_error;
-
-      model.best_error = _new_model_error;
-      model.weights = grads[_gradient_id].new_weights;
-      transferAmount(grads[_gradient_id].from, incentive);
+      model.bestError = newModelError;
+      model.weights = grads[gradientId].newWeights;
+      transferAmount(grads[gradientId].from, incentive);
     }
 
-    grads[_gradient_id].evaluated = true;
+    grads[gradientId].evaluated = true;
   }
 
-  function addGradient(uint model_id, bytes32[] _grad_addr) {
-    require(models[model_id].owner != 0);
-    IPFS memory grad_addr;
-    grad_addr.first = _grad_addr[0];
-    grad_addr.second = _grad_addr[1];
+  function addGradient(uint modelId, bytes32[] gradientAddress) {
+    require(models[modelId].owner != 0);
+    IPFS memory ipfsGradientAddress;
+    ipfsGradientAddress.first = gradientAddress[0];
+    ipfsGradientAddress.second = gradientAddress[1];
 
-    IPFS memory new_weights;
-    new_weights.first = 0;
-    new_weights.second = 0;
+    IPFS memory newWeights;
+    newWeights.first = 0;
+    newWeights.second = 0;
 
     Gradient memory newGrad;
-    newGrad.grads = grad_addr;
+    newGrad.grads = ipfsGradientAddress;
     newGrad.from = msg.sender;
-    newGrad.model_id = model_id;
-    newGrad.new_model_error = 0;
-    newGrad.new_weights = new_weights;
-    newGrad.evaluated=false;
+    newGrad.modelId = modelId;
+    newGrad.newModelError = 0;
+    newGrad.newWeights = newWeights;
+    newGrad.evaluated = false;
 
     grads.push(newGrad);
   }
 
-  function getNumModels() constant returns(uint256 model_cnt) {
+  function getNumModels() constant returns(uint256 modelCount) {
     return models.length;
   }
 
-  function getNumGradientsforModel(uint model_id) constant returns (uint num) {
+  function getNumGradientsforModel(uint modelId) constant returns (uint num) {
     num = 0;
-    for (uint i=0; i<grads.length; i++) {
-      if(grads[i].model_id == model_id) {
+    for (uint i = 0; i<grads.length; i++) {
+      if (grads[i].modelId == modelId) {
         num += 1;
       }
     }
     return num;
   }
 
-  function getGradient(uint model_id, uint gradient_id) constant returns (uint, address, bytes32[], uint, bytes32[]) {
+  function getGradient(uint modelId, uint gradientId) constant returns (uint, address, bytes32[], uint, bytes32[]) {
     uint num = 0;
-    for (uint i=0; i<grads.length; i++) {
-      if(grads[i].model_id == model_id) {
-        if(num == gradient_id) {
+    for (uint i = 0; i<grads.length; i++) {
+      if (grads[i].modelId == modelId) {
+        if (num == gradientId) {
 
-          bytes32[] memory _grad_addr = new bytes32[](2);
+          bytes32[] memory gradientAddress = new bytes32[](2);
 
-          _grad_addr[0] = grads[i].grads.first;
-          _grad_addr[1] = grads[i].grads.second;
+          gradientAddress[0] = grads[i].grads.first;
+          gradientAddress[1] = grads[i].grads.second;
 
-          bytes32[] memory _new_weghts_addr = new bytes32[](2);
-          _new_weghts_addr[0] = grads[i].new_weights.first;
-          _new_weghts_addr[1] = grads[i].new_weights.second;
+          bytes32[] memory weightsAddress = new bytes32[](2);
+          weightsAddress[0] = grads[i].newWeights.first;
+          weightsAddress[1] = grads[i].newWeights.second;
 
-          return (i, grads[i].from, _grad_addr, grads[i].new_model_error, _new_weghts_addr);
+          return (i, grads[i].from, gradientAddress, grads[i].newModelError, weightsAddress);
         }
         num += 1;
       }
     }
   }
 
-  function getModel(uint model_i) constant returns (address,uint,uint,uint,bytes32[]) {
-
+  function getModel(uint modelId) constant returns (address,uint,uint,uint,bytes32[]) {
     Model memory currentModel;
-    currentModel = models[model_i];
-    bytes32[] memory _weights = new bytes32[](2);
+    currentModel = models[modelId];
+    bytes32[] memory weights = new bytes32[](2);
 
-    _weights[0] = currentModel.weights.first;
-    _weights[1] = currentModel.weights.second;
+    weights[0] = currentModel.weights.first;
+    weights[1] = currentModel.weights.second;
 
-    return (currentModel.owner, currentModel.bounty, currentModel.initial_error, currentModel.target_error, _weights);
+    return (currentModel.owner, currentModel.bounty, currentModel.initialError, currentModel.targetError, weights);
   }
 
 }
