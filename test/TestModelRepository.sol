@@ -13,7 +13,7 @@ contract TestModelRepository {
 
     Assert.equal(repo.getNumModels(), initialModelsAmount, "ModelRepository holds 0 models initially");
   }
-
+  
   function testIncentiveValue() {
     ModelRepository repo = new ModelRepository();
 
