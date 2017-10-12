@@ -42,3 +42,9 @@ Compile and deploy the contracts
 ```
 npm run deploy
 ```
+
+Make sure everything works
+
+```
+npm run test
+```
