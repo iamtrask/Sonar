@@ -86,10 +86,8 @@ contract ModelRepository {
     //transferAmount(grads[_gradient_id].from,1);
 
     Model model = models[grads[_gradient_id].model_id];
-
-    if 
     
-    if(_new_model_error < model.best_error && model.target_error <= model.best_error) {
+    if(_new_model_error < model.best_error && model.target_error < model.best_error) {
       uint total_error= model.initial_error - model.target_error;
       uint solved_error= model.best_error - _new_model_error;
       uint incentive = incentiveCalculate(model.bounty, total_error, solved_error);
