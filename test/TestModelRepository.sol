@@ -21,7 +21,7 @@ contract TestModelRepository {
     //solved error = best_error - _new_model_error
     //incentiveCalculate(bounty, total_error, solved_error)
 
-    Assert.equal(repo.incentiveCalculate(3000000000000000000, 500, 10), 60000000000000000, "test case 1 success");
+    Assert.equal(repo.incentiveCalculate(10000, 2000, 37), 185, "test case 1 success");
     Assert.equal(repo.incentiveCalculate(123456789, 12, 4), 41152263, "test case 2 success");
   }
 }
