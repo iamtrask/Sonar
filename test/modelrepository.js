@@ -15,7 +15,7 @@ const firstModel = {
   id: 0,
   bountyInWei: 10000,
   initialError: 42,
-  targetError: 1337,
+  targetError: 10,
   twoPartIpfsHash: splitIpfsHashInMiddle('QmWmyoMoctfbAaiEs2G46gpeUmhqFRDW6KWo64y5r581Vz')
 }
 
@@ -142,7 +142,7 @@ contract('ModelRepository - Evaluating Gradients', accounts => {
     const balanceAfterEvaluation = await balanceOf(patTheGradientProvider)
 
     assert.ok(balanceAfterEvaluation.valueOf() > balanceBeforeEvaluation.valueOf(),
-      'gradient provider was paid')
+      'gradient provider was not paid')
   })
 
   it('will only allow the model owner to evaluate a gradient', async () => {
