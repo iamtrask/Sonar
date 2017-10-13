@@ -85,8 +85,8 @@ contract ModelRepository {
 
     Model model = models[grads[gradientId].modelId];
     if (newModelError < model.bestError && model.targetError < model.bestError) {
-      uint totalError= model.initialError - model.targetError;
-      uint solvedError= model.bestError - newModelError;
+      uint totalError = model.initialError - model.targetError;
+      uint solvedError = model.bestError - newModelError;
 
       uint incentive = incentiveCalculate(model.bounty, totalError, solvedError);
 
