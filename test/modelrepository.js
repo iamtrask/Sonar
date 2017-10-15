@@ -97,6 +97,19 @@ contract('ModelRepository', accounts => {
     }
     assert.fail()
   })
+
+  it('is not possible to call transferAmount from outside of the contract and steal funds', async () => {
+    const modelRepositoryContract = await ModelRepository.deployed()
+    try {
+      await modelRepositoryContract.transferAmount(patTheGradientProvider, 100, {
+        from: patTheGradientProvider
+      })
+    } catch (error) {
+      assert.ok(error)
+      return
+    }
+    assert.fail()
+  })
 })
 
 contract('ModelRepository - Evaluating Gradients', accounts => {
@@ -155,19 +168,6 @@ contract('ModelRepository - Evaluating Gradients', accounts => {
     const updatedWeights = splitIpfsHashInMiddle('QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG')
     try {
       await modelRepositoryContract.evalGradient(firstGradient.id + 1, improvedError, updatedWeights, {
-        from: gregTheGradientProvider
-      })
-    } catch (error) {
-      assert.ok(error)
-      return
-    }
-    assert.fail()
-  })
-
-  it('is not possible to call transferAmount from outside of the contract and steal funds', async () => {
-    const modelRepositoryContract = await ModelRepository.deployed()
-    try {
-      await modelRepositoryContract.transferAmount(gregTheGradientProvider, 100, {
         from: gregTheGradientProvider
       })
     } catch (error) {
