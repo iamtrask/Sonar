@@ -73,9 +73,8 @@ contract ModelRepository {
     models.push(newModel);
   }
 
-  function incentiveCalculate(uint bounty, uint totalError, uint solvedError) returns(uint total) {
-    total = ((bounty/totalError) * solvedError);
-    return total;
+  function calculateIncentive(uint bounty, uint totalError, uint solvedError) constant returns(uint total) {
+    return (bounty*solvedError) / totalError;
   }
 
   function evalGradient(uint gradientId, uint newModelError, bytes32[] newWeightsAddress) onlyByModelOwner(gradientId) onlyIfGradientNotYetEvaluated(gradientId) {
@@ -88,7 +87,7 @@ contract ModelRepository {
       uint totalError = model.initialError - model.targetError;
       uint solvedError = model.bestError - newModelError;
 
-      uint incentive = incentiveCalculate(model.bounty, totalError, solvedError);
+      uint incentive = calculateIncentive(model.bounty, totalError, solvedError);
 
       model.bestError = newModelError;
       model.weights = grads[gradientId].newWeights;

@@ -17,11 +17,21 @@ contract TestModelRepository {
   function testIncentiveValue() {
     ModelRepository repo = new ModelRepository();
 
-    //total error = initial error - target_error
-    //solved error = best_error - _new_model_error
-    //incentiveCalculate(bounty, total_error, solved_error)
+    bounty_1 = 10000;
+    bounty_2 = 123456789;
 
-    Assert.equal(repo.incentiveCalculate(10000, 2000, 37), 185, "test case 1 ");
-    Assert.equal(repo.incentiveCalculate(123456789, 9, 4), 54869684, "test case 2");
+    //total error = initial error - target_error
+    totalError_1 = 2000;
+    totalError_2 = 9;
+
+    //solved error = best_error - _new_model_error
+    solvedError_1 = 37;
+    solvedError_2 = 4;
+
+    solutionValue_1 = 185;
+    solutionValue_2 = 54869684;
+
+    Assert.equal(repo.calculateIncentive(bounty_1, totalError_1, solvedError_1), solutionValue_1, "calculateIncentive 1");
+    Assert.equal(repo.calculateIncentive(bounty_2, totalError_2, solvedError_2), solutionValue_2, "calculateIncentive 2");
   }
 }
