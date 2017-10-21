@@ -4,7 +4,7 @@
   "description": "Federated Deep Learning on the Ethereum Blockchain",
   "private": true,
   "scripts": {
-    "lint": "standard",
+    "lint": "standard && solium --file contracts/ModelRepository.sol",
     "test:truffle": "truffle test",
     "test": "npm run lint && npm run test:truffle",
     "deploy": "truffle migrate",
@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "ethereumjs-testrpc": "^4.0.0",
+    "solium": "^1.0.0",
     "standard": "^10.0.3"
   },
   "standard": {
