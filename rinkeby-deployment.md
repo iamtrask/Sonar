@@ -1,4 +1,20 @@
-# scope
+# Deploying Sonar to Rinkeby testnet 📦⛓
+
+<!-- TOC depthFrom:2 -->
+
+- [⚙ prerequisites](#⚙-prerequisites)
+- [🚀 deploying sonar](#-deploying-sonar)
+    - [1. start local geth node](#1-start-local-geth-node)
+    - [2. create your account](#2-create-your-account)
+    - [3. fund your account](#3-fund-your-account)
+    - [4. deploy using truffle](#4-deploy-using-truffle)
+        - [truffle config](#truffle-config)
+        - [run local rinkeby node with the unlocked account](#run-local-rinkeby-node-with-the-unlocked-account)
+        - [do the actual deployment](#do-the-actual-deployment)
+- [📞 Using the deployed contract](#-using-the-deployed-contract)
+    - [start local geth node](#start-local-geth-node)
+
+<!-- /TOC -->
 
 > We will use the OpenMined Sonar smartcontract deployed to the rinkeby ethereum testchain.
 
@@ -6,11 +22,11 @@
 
 All paths are MacOS specific.. might differ for you
 
-## prereqs
+## ⚙ prerequisites
 
 First you need to install [geth](https://geth.ethereum.org/) for running a local ethereum node
 
-## deploying sonar
+## 🚀 deploying sonar
 
 what's going to happen:
 1. start local rinkeby node
@@ -105,3 +121,22 @@ Saving artifacts...
 
 As you can see we have a new contract deployed at `0xd60e1a150b59a89a8e6e6ff2c03ffb6cb4096205` you can verify this by heading over to [etherscan](https://rinkeby.etherscan.io/address/0xd60e1a150b59a89a8e6e6ff2c03ffb6cb4096205) and see your contract.
 
+## 📞 Using the deployed contract
+
+To connect to the smartcontract on rinkeby you need to run the local `geth` node.
+
+You might need an account for that so please refer to the instructions above.
+
+### start local geth node
+
+Change the unlock address to the account you want to use to interact with the contract
+
+```
+geth --rinkeby --rpc --rpcapi db,eth,net,web3,personal --unlock="0xbf4696ecfa2d3697f98805d4166fdaeaf3b67943"
+```
+
+With this you should be able to point `pySonar` or `mine.js` to this `localhost:8545` as if it were a testrpc instance.
+
+The first deployment is at the contract address `0xd60e1a150b59a89a8e6e6ff2c03ffb6cb4096205`
+
+_Good luck, take this ⚔_
