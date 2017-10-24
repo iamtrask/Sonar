@@ -15,7 +15,7 @@ const firstModel = {
   id: 0,
   bountyInWei: 10000,
   initialError: 42,
-  targetError: 1337,
+  targetError: 10,
   twoPartIpfsHash: splitIpfsHashInMiddle('QmWmyoMoctfbAaiEs2G46gpeUmhqFRDW6KWo64y5r581Vz')
 }
 
@@ -97,6 +97,19 @@ contract('ModelRepository', accounts => {
     }
     assert.fail()
   })
+
+  it('is not possible to call transferAmount from outside of the contract and steal funds', async () => {
+    const modelRepositoryContract = await ModelRepository.deployed()
+    try {
+      await modelRepositoryContract.transferAmount(patTheGradientProvider, 100, {
+        from: patTheGradientProvider
+      })
+    } catch (error) {
+      assert.ok(error)
+      return
+    }
+    assert.fail()
+  })
 })
 
 contract('ModelRepository - Evaluating Gradients', accounts => {
@@ -142,7 +155,7 @@ contract('ModelRepository - Evaluating Gradients', accounts => {
     const balanceAfterEvaluation = await balanceOf(patTheGradientProvider)
 
     assert.ok(balanceAfterEvaluation.valueOf() > balanceBeforeEvaluation.valueOf(),
-      'gradient provider was paid')
+      'gradient provider was not paid')
   })
 
   it('will only allow the model owner to evaluate a gradient', async () => {
