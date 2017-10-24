@@ -56,7 +56,6 @@ npm run test
 On Windows, you will have to take a few extra steps to get everything to work:
 
 * Make sure that the Solidity source files in `contracts/` (and `test/`) have Unix-Style line endings (`LF`).
-
 One way to do this is enabling Unix-Style checkout for the project:
 ```
 git config core.autocrlf input
@@ -67,9 +66,8 @@ If this causes problems for you, edit the `.sol` files manually.
 * Rename `truffle.js` to `truffle-config.js`.
 
 * In `package.json` change the line that starts with `extract-abi`. Add `node` before the path of the script, i.e. the line should read
-
 ```
 "extract-abi": "node ./bin/extract-abi build/contracts/ModelRepository.json > build/ModelRepository.abi"
 ```
 
-* Finally, follow the Linux instructions above.
+Finally, follow the Linux instructions above.
