@@ -53,7 +53,7 @@ npm run test
 
 ### Windows 10
 
-On Windows, you will have to take a few extra steps to get everything to work:
+On Windows, you will have to take a few extra steps to get everything to work locally:
 
 * Make sure that the Solidity source files in `contracts/` (and `test/`) have Unix-Style line endings (`LF`).
 One way to do this is enabling Unix-Style checkout for the project:
