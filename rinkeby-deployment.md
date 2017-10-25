@@ -20,8 +20,6 @@
 
 **Note**: This is the first hacky docs for what I did to deploy the contract and attach to it. Feel free to improve this doc!
 
-All paths are MacOS specific.. might differ for you
-
 ## ⚙ prerequisites
 
 First you need to install [geth](https://geth.ethereum.org/) for running a local ethereum node
@@ -43,7 +41,10 @@ what's going to happen:
 
 _Creating the account using `geth account new` didn't work for me as it seems that the account is created for the main net and importing the account to testnet is not possible. Might be able to pull this off by moving files around._
 
-You attach to the `geth` with a REPL: `geth attach ~/Library/Ethereum/rinkeby/geth.ipc` (_On Windows:_ `geth attach \\.\pipe\geth.ipc`)
+You attach to the `geth` with a REPL:
+	_Linux:_ `geth attach ~/.ethereum/rinkeby/geth.ipc`,
+	_OS X:_ `geth attach ~/Library/Ethereum/rinkeby/geth.ipc`, 
+	_Windows:_ `geth attach \\.\pipe\geth.ipc`.
 
 If you type `eth.accounts` you should get an empty response `[]`
 
@@ -58,7 +59,7 @@ Repeat passphrase:
 "0xbf4696ecfa2d3697f98805d4166fdaeaf3b67944"
 ```
 
-Your private key is stored in a secret facility (_Linux/OS X:_ `~/Library/Ethereum/rinkeby/keystore`, _Windows:_  `%userprofile%\AppData\Roaming\Ethereum\rinkeby\keystore`). If you wish to view your account on [myetherwallet](https://www.myetherwallet.com/#view-wallet-info) just select the option of `Keystore File (UTC / JSON)` and point it to the file at this address. Enter your passphrase and you should see your account.
+Your private key is stored in a secret facility (_Linux:_ `~/.ethereum/rinkeby/keystore`, _OS X:_ `~/Library/Ethereum/rinkeby/keystore`, _Windows:_  `%userprofile%\AppData\Roaming\Ethereum\rinkeby\keystore`). If you wish to view your account on [myetherwallet](https://www.myetherwallet.com/#view-wallet-info) just select the option of `Keystore File (UTC / JSON)` and point it to the file at this address. Enter your passphrase and you should see your account.
 
 ### 3. fund your account
 
