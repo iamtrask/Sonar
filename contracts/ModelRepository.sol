@@ -53,7 +53,7 @@ contract ModelRepository {
     assert(receiver.send(amount));
   }
 
-  function addModel(bytes32[] weights, uint initialError, uint targetError) payable {
+  function addModel(bytes32[] weights, uint initialError, uint targetError) public payable {
 
     IPFS memory ipfsWeights;
     ipfsWeights.first = weights[0];
@@ -73,11 +73,11 @@ contract ModelRepository {
     models.push(newModel);
   }
 
-  function calculateIncentive(uint bounty, uint totalError, uint solvedError) constant returns(uint total) {
+  function calculateIncentive(uint bounty, uint totalError, uint solvedError) constant private returns(uint total) {
     return (bounty*solvedError) / totalError;
   }
 
-  function evalGradient(uint gradientId, uint newModelError, bytes32[] newWeightsAddress) onlyByModelOwner(gradientId) onlyIfGradientNotYetEvaluated(gradientId) {
+  function evalGradient(uint gradientId, uint newModelError, bytes32[] newWeightsAddress) onlyByModelOwner(gradientId) onlyIfGradientNotYetEvaluated(gradientId) public {
     grads[gradientId].newWeights.first = newWeightsAddress[0];
     grads[gradientId].newWeights.second = newWeightsAddress[1];
     grads[gradientId].newModelError = newModelError;
@@ -97,7 +97,7 @@ contract ModelRepository {
     grads[gradientId].evaluated = true;
   }
 
-  function addGradient(uint modelId, bytes32[] gradientAddress) {
+  function addGradient(uint modelId, bytes32[] gradientAddress) public {
     require(models[modelId].owner != 0);
     IPFS memory ipfsGradientAddress;
     ipfsGradientAddress.first = gradientAddress[0];
@@ -118,11 +118,11 @@ contract ModelRepository {
     grads.push(newGrad);
   }
 
-  function getNumModels() constant returns(uint256 modelCount) {
+  function getNumModels() constant public returns(uint256 modelCount) {
     return models.length;
   }
 
-  function getNumGradientsforModel(uint modelId) constant returns (uint num) {
+  function getNumGradientsforModel(uint modelId) constant public returns (uint num) {
     num = 0;
     for (uint i = 0; i<grads.length; i++) {
       if (grads[i].modelId == modelId) {
@@ -132,7 +132,7 @@ contract ModelRepository {
     return num;
   }
 
-  function getGradient(uint modelId, uint gradientId) constant returns (uint, address, bytes32[], uint, bytes32[]) {
+  function getGradient(uint modelId, uint gradientId) constant public returns (uint, address, bytes32[], uint, bytes32[]) {
     uint num = 0;
     for (uint i = 0; i<grads.length; i++) {
       if (grads[i].modelId == modelId) {
@@ -154,7 +154,7 @@ contract ModelRepository {
     }
   }
 
-  function getModel(uint modelId) constant returns (address,uint,uint,uint,bytes32[]) {
+  function getModel(uint modelId) constant public returns (address,uint,uint,uint,bytes32[]) {
     Model memory currentModel;
     currentModel = models[modelId];
     bytes32[] memory weights = new bytes32[](2);
