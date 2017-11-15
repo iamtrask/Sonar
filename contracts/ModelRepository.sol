@@ -73,7 +73,7 @@ contract ModelRepository {
     models.push(newModel);
   }
 
-  function calculateIncentive(uint bounty, uint totalError, uint solvedError) constant private returns(uint total) {
+  function calculateIncentive(uint bounty, uint totalError, uint solvedError) constant public returns(uint total) {
     return (bounty*solvedError) / totalError;
   }
 
