@@ -66,7 +66,7 @@ contract ModelRepository {
   /// @param weights Model's initial weights' IPFS address.
   /// @param initialError Model's initial error value.
   /// @param targetError Model's target error value.
-  function addModel(bytes32[] weights, uint initialError, uint targetError) payable {
+  function addModel(bytes32[] weights, uint initialError, uint targetError) public payable {
 
     IPFS memory ipfsWeights;
     ipfsWeights.first = weights[0];
@@ -94,7 +94,7 @@ contract ModelRepository {
   /// @param totalError Model's total error.
   /// @param solvedError Total error solved by miner.
   /// @return The calculated incentive.
-  function calculateIncentive(uint bounty, uint totalError, uint solvedError) constant returns(uint total) {
+  function calculateIncentive(uint bounty, uint totalError, uint solvedError) constant public returns(uint total) {
     return (bounty*solvedError) / totalError;
   }
 
@@ -104,7 +104,7 @@ contract ModelRepository {
   /// @param gradientId Id of the gradient to be evaluated.
   /// @param newModelError New error of gradient to be evaluated.
   /// @param newWeightsAddress IPFS address of the new weights.
-  function evalGradient(uint gradientId, uint newModelError, bytes32[] newWeightsAddress) onlyByModelOwner(gradientId) onlyIfGradientNotYetEvaluated(gradientId) {
+  function evalGradient(uint gradientId, uint newModelError, bytes32[] newWeightsAddress) onlyByModelOwner(gradientId) onlyIfGradientNotYetEvaluated(gradientId) public {
     grads[gradientId].newWeights.first = newWeightsAddress[0];
     grads[gradientId].newWeights.second = newWeightsAddress[1];
     grads[gradientId].newModelError = newModelError;
@@ -129,7 +129,7 @@ contract ModelRepository {
   /// zero.
   /// @param modelId Id of the model to which the new gradients correspond.
   /// @param gradientAddress IPFS address of the gradient being added.
-  function addGradient(uint modelId, bytes32[] gradientAddress) {
+  function addGradient(uint modelId, bytes32[] gradientAddress) public {
     require(models[modelId].owner != 0);
     IPFS memory ipfsGradientAddress;
     ipfsGradientAddress.first = gradientAddress[0];
@@ -152,7 +152,7 @@ contract ModelRepository {
 
   /// @notice Return the number of models stored in the blockchain.
   /// @return The number of models stored in the blockchain.
-  function getNumModels() constant returns(uint256 modelCount) {
+  function getNumModels() constant public returns(uint256 modelCount) {
     return models.length;
   }
 
@@ -160,7 +160,7 @@ contract ModelRepository {
   /// given id.
   /// @return The number of gradients in the blockchain for model with
   /// given id.
-  function getNumGradientsforModel(uint modelId) constant returns (uint num) {
+  function getNumGradientsforModel(uint modelId) constant public returns (uint num) {
     num = 0;
     for (uint i = 0; i<grads.length; i++) {
       if (grads[i].modelId == modelId) {
@@ -175,7 +175,7 @@ contract ModelRepository {
   /// @param modelId Id of model to be queried.
   /// @param gradientId Id of gradient for given model.
   /// @return The queried gradient as a tuple with form (index in array, from address, gradient address, gradient's new model error, gradient's weight address).
-  function getGradient(uint modelId, uint gradientId) constant returns (uint, address, bytes32[], uint, bytes32[]) {
+  function getGradient(uint modelId, uint gradientId) constant public returns (uint, address, bytes32[], uint, bytes32[]) {
     uint num = 0;
     for (uint i = 0; i<grads.length; i++) {
       if (grads[i].modelId == modelId) {
@@ -200,7 +200,7 @@ contract ModelRepository {
   /// @notice Return the model with given unique id.
   /// @param modelId Id of model to be retrieved.
   /// @return The model associated to the id, as a tuple with form (owner, bounty, initialError, targetError, weight address).
-  function getModel(uint modelId) constant returns (address,uint,uint,uint,bytes32[]) {
+  function getModel(uint modelId) constant public returns (address,uint,uint,uint,bytes32[]) {
     Model memory currentModel;
     currentModel = models[modelId];
     bytes32[] memory weights = new bytes32[](2);
