@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/OpenMined/Sonar#readme",
   "dependencies": {
-    "truffle": "^3.4.9"
+    "truffle": "^4.0.1"
   },
   "devDependencies": {
     "ethereumjs-testrpc": "^4.0.0",
