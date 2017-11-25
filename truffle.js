@@ -3,7 +3,8 @@ module.exports = {
     development: {
       host: 'localhost',
       port: 8545,
-      network_id: 'default'
+      network_id: 'default',
+      gas: 4612388 // Gas limit used for deploys
     },
     docker: {
       host: 'testrpc',
