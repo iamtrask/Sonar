@@ -7,7 +7,7 @@ module.exports = {
       gas: 4612388 // Gas limit used for deploys
     },
     docker: {
-      host: 'testrpc',
+      host: 'localhost',
       port: 9545,
       network_id: 25189
     },

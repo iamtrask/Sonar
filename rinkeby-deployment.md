@@ -135,7 +135,7 @@ Change the unlock address to the account you want to use to interact with the co
 geth --rinkeby --rpc --rpcapi db,eth,net,web3,personal --unlock="0xbf4696ecfa2d3697f98805d4166fdaeaf3b67943"
 ```
 
-With this you should be able to point `pySonar` or `mine.js` to this `localhost:8545` as if it were a testrpc instance.
+With this you should be able to point `pySonar` or `mine.js` to this `localhost:9545`.
 
 The first deployment is at the contract address `0xd60e1a150b59a89a8e6e6ff2c03ffb6cb4096205`
 

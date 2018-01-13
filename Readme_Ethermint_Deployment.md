@@ -108,7 +108,7 @@ Truffle works without any extra arguments.
 Let's compile the contracts and load them onto the blockchain !!
 
 ```bash
-truffle deploy
+truffle migrate
 ```
 You should see output like:
 
