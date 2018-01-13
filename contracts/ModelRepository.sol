@@ -109,7 +109,7 @@ contract ModelRepository {
     grads[gradientId].newWeights.second = newWeightsAddress[1];
     grads[gradientId].newModelError = newModelError;
 
-    Model model = models[grads[gradientId].modelId];
+    Model storage model = models[grads[gradientId].modelId];
     if (newModelError < model.bestError && model.targetError < model.bestError) {
       uint totalError = model.initialError - model.targetError;
       uint solvedError = model.bestError - newModelError;
