@@ -13,7 +13,7 @@ We prepared a Docker container of the Sonar smart contract running on a private 
 Run
 
 ```sh
-docker run -d -p 8545:8545 openmined/sonar-testrpc:edge
+docker run -d -p 8545:8545 openmined/sonar:edge
 # :edge for the latest dev build
 # :latest (default) for stable builds
 ```
