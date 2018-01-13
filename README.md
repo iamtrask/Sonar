@@ -8,7 +8,7 @@ It’s a smart contract running on an [Ethereum](https://ethereum.org/) Blockcha
 
 ## Using Docker
 
-We prepared a Docker container of the Sonar smart contract running on a private in-memory ethereum blockchain ([testrpc](https://github.com/ethereumjs/testrpc)).
+We prepared a Docker container of the Sonar smart contract running on a private in-memory ethereum blockchain.
 
 Run
 
@@ -20,31 +20,33 @@ docker run -d -p 8545:8545 openmined/sonar-testrpc:edge
 
 Everytime you restart the docker container all interactions to the chain will be reset and you will have a clean image (with nothing but the contract).
 
-### Docker creation
+## Local installation
 
-There are two docker files in this repository. `Dockerfile` creates a plain Sonar container ([openmined/sonar](https://hub.docker.com/r/openmined/sonar
-)) with the compiled contract in it. `Dockerfile.testrpc` creates the [openmined/sonar-testrpc](https://hub.docker.com/r/openmined/sonar-testrpc) image with the contract pre-deployed on `testrpc`.
+##### Get the repo
 
-## Manual setup
-
-Install dependencies
-
-```npm install```
-
-Start testrpc
-
-```
-./node_modules/.bin/testrpc
+```sh
+git clone git@github.com:OpenMined/Sonar.git
+cd Sonar
+npm install
 ```
 
-Compile and deploy the contracts
+##### Start the development environment
+Sonar uses [truffle develop](http://truffleframework.com/docs/getting_started/client#truffle-develop) built in environment on `http://127.0.0.1:9545`. It will display the first 10 accounts and the mnemonic used to create those accounts. 
 
 ```
-npm run deploy
+npm run develop
 ```
 
-Make sure everything works
+
+##### Deploy contracts
+In a new tab, compile and deploy the contracts
 
 ```
-npm run test
+npm run migrate
+```
+
+##### Test
+
+```
+npm test
 ```
