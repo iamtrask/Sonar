@@ -94,7 +94,7 @@ contract ModelRepository {
   /// @param totalError Model's total error.
   /// @param solvedError Total error solved by miner.
   /// @return The calculated incentive.
-  function calculateIncentive(uint bounty, uint totalError, uint solvedError) constant public returns(uint total) {
+  function calculateIncentive(uint bounty, uint totalError, uint solvedError) pure public returns(uint total) {
     return (bounty*solvedError) / totalError;
   }
 
