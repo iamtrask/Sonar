@@ -136,8 +136,8 @@ contract ModelRepository {
     ipfsGradientAddress.second = gradientAddress[1];
 
     IPFS memory newWeights;
-    newWeights.first = 0;
-    newWeights.second = 0;
+    newWeights.first = bytes32(0);
+    newWeights.second = bytes32(0);
 
     Gradient memory newGrad;
     newGrad.grad = ipfsGradientAddress;
