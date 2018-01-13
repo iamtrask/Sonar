@@ -18,7 +18,7 @@ contract ModelRepository {
 
     // submitted from miner
     address from;
-    IPFS grads;
+    IPFS grad;
     uint modelId;
 
     // submitted from trainer
@@ -140,7 +140,7 @@ contract ModelRepository {
     newWeights.second = 0;
 
     Gradient memory newGrad;
-    newGrad.grads = ipfsGradientAddress;
+    newGrad.grad = ipfsGradientAddress;
     newGrad.from = msg.sender;
     newGrad.modelId = modelId;
     newGrad.newModelError = 0;
@@ -183,8 +183,8 @@ contract ModelRepository {
 
           bytes32[] memory gradientAddress = new bytes32[](2);
 
-          gradientAddress[0] = grads[i].grads.first;
-          gradientAddress[1] = grads[i].grads.second;
+          gradientAddress[0] = grads[i].grad.first;
+          gradientAddress[1] = grads[i].grad.second;
 
           bytes32[] memory weightsAddress = new bytes32[](2);
           weightsAddress[0] = grads[i].newWeights.first;
