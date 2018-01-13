@@ -5,11 +5,10 @@
   "private": true,
   "scripts": {
     "lint": "standard && solium --file contracts/ModelRepository.sol",
-    "test:truffle": "truffle test --network=test",
-    "test": "npm run lint && npm run test:truffle",
-    "deploy": "truffle migrate",
-    "extract-abi": "./bin/extract-abi build/contracts/ModelRepository.json > build/ModelRepository.abi",
-    "postinstall": "truffle compile && npm run extract-abi"
+    "develop": "truffle develop",
+    "compile": "truffle compile",
+    "migrate": "truffle migrate",
+    "test": "truffle test --network=test"
   },
   "repository": {
     "type": "git",
@@ -26,10 +25,9 @@
   },
   "homepage": "https://github.com/OpenMined/Sonar#readme",
   "dependencies": {
-    "truffle": "^4.0.1"
+    "truffle": "^4.0.4"
   },
   "devDependencies": {
-    "ethereumjs-testrpc": "^4.0.0",
     "solium": "^1.0.0",
     "standard": "^10.0.3"
   },
