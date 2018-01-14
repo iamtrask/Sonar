@@ -8,7 +8,8 @@
     "develop": "truffle develop",
     "compile": "truffle compile",
     "migrate": "truffle migrate",
-    "test": "truffle test --network=test"
+    "test": "truffle test --network=test",
+    "postinstall": "npm run compile"
   },
   "repository": {
     "type": "git",
