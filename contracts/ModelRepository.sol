@@ -18,7 +18,7 @@ contract ModelRepository {
 
     // submitted from miner
     address from;
-    IPFS grads;
+    IPFS grad;
     uint modelId;
 
     // submitted from trainer
@@ -94,7 +94,7 @@ contract ModelRepository {
   /// @param totalError Model's total error.
   /// @param solvedError Total error solved by miner.
   /// @return The calculated incentive.
-  function calculateIncentive(uint bounty, uint totalError, uint solvedError) constant public returns(uint total) {
+  function calculateIncentive(uint bounty, uint totalError, uint solvedError) pure public returns(uint total) {
     return (bounty*solvedError) / totalError;
   }
 
@@ -109,7 +109,7 @@ contract ModelRepository {
     grads[gradientId].newWeights.second = newWeightsAddress[1];
     grads[gradientId].newModelError = newModelError;
 
-    Model model = models[grads[gradientId].modelId];
+    Model storage model = models[grads[gradientId].modelId];
     if (newModelError < model.bestError && model.targetError < model.bestError) {
       uint totalError = model.initialError - model.targetError;
       uint solvedError = model.bestError - newModelError;
@@ -136,11 +136,11 @@ contract ModelRepository {
     ipfsGradientAddress.second = gradientAddress[1];
 
     IPFS memory newWeights;
-    newWeights.first = 0;
-    newWeights.second = 0;
+    newWeights.first = bytes32(0);
+    newWeights.second = bytes32(0);
 
     Gradient memory newGrad;
-    newGrad.grads = ipfsGradientAddress;
+    newGrad.grad = ipfsGradientAddress;
     newGrad.from = msg.sender;
     newGrad.modelId = modelId;
     newGrad.newModelError = 0;
@@ -183,8 +183,8 @@ contract ModelRepository {
 
           bytes32[] memory gradientAddress = new bytes32[](2);
 
-          gradientAddress[0] = grads[i].grads.first;
-          gradientAddress[1] = grads[i].grads.second;
+          gradientAddress[0] = grads[i].grad.first;
+          gradientAddress[1] = grads[i].grad.second;
 
           bytes32[] memory weightsAddress = new bytes32[](2);
           weightsAddress[0] = grads[i].newWeights.first;
