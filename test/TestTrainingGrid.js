@@ -1,4 +1,5 @@
 var TrainingGrid = artifacts.require('TrainingGrid');
+const web3utils = require('web3-utils');
 
 function arrayToAddress (hexStrings) {
   return hexStrings.map(e => Buffer.from(e.slice(2), 'hex').toString().split('\x00')[0])
@@ -16,6 +17,10 @@ function addressToArray (ipfsAddress) {
 
 var config = {
   experimentAddress: 'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUk',
+  weightsAddress: [
+                    'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUk',
+                    'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUk'
+                  ],
   bounty: 100
 };
 
@@ -23,7 +28,15 @@ contract('TrainingGrid', function(accounts) {
   it("should add a new experiment", function() {
     return TrainingGrid.deployed().then(function(instance) {
       var experimentAddress = addressToArray(config.experimentAddress);
-      return instance.addExperiment(experimentAddress, {
+      var weightAddresses = Array();
+
+      for(var i = 0; i < config.weightsAddress.length; i++) {
+        var array = addressToArray(config.weightsAddress[i]);
+        var k = web3utils.soliditySha3({type: 'bytes32', value: array});
+        weightAddresses.push(k);
+      }
+
+      return instance.addExperiment(experimentAddress, weightAddresses, {
         value: config.bounty
       });
     }).then(function() {
@@ -50,10 +63,11 @@ contract('TrainingGrid', function(accounts) {
       var experimentAddress = addressToArray(config.experimentAddress);
       return instance.getExperiment.call(experimentAddress);
     }).then(function(res) {
-      console.log("res", res);
-      var owner = res[0];
-      var bounty = res[1].toNumber();
-      var experimentAddress = arrayToAddress(res[2]);
+      var id = res[0];
+      var owner = res[1];
+      var bounty = res[2].toNumber();
+      var experimentAddress = arrayToAddress(res[3]);
+      assert.equal(id, web3utils.soliditySha3({type: 'bytes32', value: res[3]}));
       assert.equal(owner, accounts[0], "Owner should match");
       assert.equal(bounty, config.bounty, "Bounty should match");
       assert.equal(experimentAddress, config.experimentAddress, "Address should match");

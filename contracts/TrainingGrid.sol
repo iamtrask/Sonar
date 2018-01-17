@@ -1,5 +1,6 @@
 pragma solidity ^0.4.17;
 
+
 contract TrainingGrid {
 
   struct Experiment {
@@ -33,10 +34,10 @@ contract TrainingGrid {
     return experimentIds;
   }
 
-  function getExperiment(bytes32[] experimentAddress) public constant returns (address, uint, bytes32[]) {
+  function getExperiment(bytes32[] experimentAddress) public constant returns (bytes32, address, uint, bytes32[]) {
     Experiment memory experiment;
     bytes32 id = keccak256(experimentAddress);
     experiment = experiments[id];
-    return (experiment.owner, experiment.bounty, experiment.ipfs);
+    return (id, experiment.owner, experiment.bounty, experiment.ipfs);
   }
 }
