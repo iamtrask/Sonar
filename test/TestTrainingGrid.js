@@ -107,27 +107,36 @@ contract('TrainingGrid', function(accounts) {
       assert.equal(1, count, "Job count should equal 1");
     })
   });
-  it("sumbit result", function() {
+  it("add result", function() {
     return TrainingGrid.deployed().then(function(instance) {
-      var jobData = {type: 'bytes32', value: addressToArray(config.jobAddress[0])};
-
-      var jobId = web3utils.soliditySha3(jobData);
+      var jobAddress = addressToArray(config.jobAddress[0]);
       var resultAddress = addressToArray(config.resultAddress);
-      return instance.submitResult.call(jobId, resultAddress);
+      return instance.addResult(jobAddress, resultAddress, {
+        value: config.bounty
+      });
     }).then(function(res) {
       // assert
     })
   })
-  it("get result", function() {
+  it("get results count", function() {
+    return TrainingGrid.deployed().then(function (instance) {
+      var jobData = {type: 'bytes32', value: addressToArray(config.jobAddress[0])};
+      var jobId = web3utils.soliditySha3(jobData);
+      return instance.countResults.call(jobId);
+    }).then(function(res) {
+      var count = res.toNumber();
+
+      assert.equal(count, 1, "Results count should equal 1");
+    })
+  });
+  it("get results", function() {
     return TrainingGrid.deployed().then(function(instance) {
       var jobData = {type: 'bytes32', value: addressToArray(config.jobAddress[0])};
-
       var jobId = web3utils.soliditySha3(jobData);
       return instance.getResults.call(jobId);
     }).then(function(res) {
       var owner = res[0];
       var resultAddress = res[1];
-
       assert.equal(owner, accounts[0]);
       assert.equal(config.resultAddress, arrayToAddress(resultAddress));
     })

@@ -45,6 +45,17 @@ contract TrainingGrid {
     return experimentIds.length;
   }
 
+  function getExperimentIds() constant public returns (bytes32[]) {
+    return experimentIds;
+  }
+
+  function getExperiment(bytes32[] experimentAddress) public constant returns (bytes32, address, uint, bytes32[]) {
+    Experiment memory experiment;
+    bytes32 id = keccak256(experimentAddress);
+    experiment = experiments[id];
+    return (id, experiment.owner, experiment.bounty, experiment.ipfs);
+  }
+
   function addJobs(bytes32 experimentId, bytes32[] jobAddresses) internal {
     for (uint i = 0; i < jobAddresses.length; i += 2) {
       bytes32[] memory jobAddress = new bytes32[](2);
@@ -75,27 +86,22 @@ contract TrainingGrid {
     return (job.id, job.experimentId, job.ipfs);
   }
 
-  function submitResult(bytes32 jobId, bytes32[] resultAddress) public {
+  function addResult(bytes32[] jobAddress, bytes32[] resultAddress) public payable {
     Result memory result;
+    bytes32 jobId = keccak256(jobAddress);
     result.owner = msg.sender;
     result.ipfs = resultAddress;
+
     results[jobId].push(result);
   }
 
-  function getResults(bytes32 jobId) public constant returns (address, bytes32[]) {
+  function countResults(bytes32 jobId) constant public returns (uint256 resultsCount) {
+    return results[jobId].length;
+  }
+
+  function getResults(bytes32 jobId) constant public returns (address, bytes32[]) {
     Result[] memory jobResults = results[jobId];
     Result memory result = jobResults[0];
     return (result.owner, result.ipfs);
-  }
-
-  function getExperimentIds() constant public returns (bytes32[]) {
-    return experimentIds;
-  }
-
-  function getExperiment(bytes32[] experimentAddress) public constant returns (bytes32, address, uint, bytes32[]) {
-    Experiment memory experiment;
-    bytes32 id = keccak256(experimentAddress);
-    experiment = experiments[id];
-    return (id, experiment.owner, experiment.bounty, experiment.ipfs);
   }
 }
