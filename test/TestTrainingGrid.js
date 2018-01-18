@@ -15,6 +15,14 @@ function addressToArray (ipfsAddress) {
   return parts
 }
 
+function addressToId (ipfsAddress) {
+  return web3utils.soliditySha3({type: 'bytes32', value: addressToArray(ipfsAddress)});
+}
+
+function arrayToId (ipfsArray) {
+  return web3utils.soliditySha3({type: 'bytes32', value: ipfsArray});
+}
+
 var config = {
   experimentAddress: 'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUk',
   jobAddress: [
@@ -68,7 +76,7 @@ contract('TrainingGrid', function(accounts) {
       var owner = res[1];
       var bounty = res[2].toNumber();
       var experimentAddress = arrayToAddress(res[3]);
-      assert.equal(id, web3utils.soliditySha3({type: 'bytes32', value: res[3]}));
+      assert.equal(id, arrayToId(res[3]));
       assert.equal(owner, accounts[0], "Owner should match");
       assert.equal(bounty, config.bounty, "Bounty should match");
       assert.equal(experimentAddress, config.experimentAddress, "Address should match");
@@ -99,8 +107,7 @@ contract('TrainingGrid', function(accounts) {
   })
   it("should get job", function() {
     return TrainingGrid.deployed().then(function(instance) {
-      var jobAddress = addressToArray(config.jobAddress[0]);
-      var jobId = web3utils.soliditySha3({type: 'bytes32', value: jobAddress})
+      var jobId = addressToId(config.jobAddress[0]);
       return instance.getJob.call(jobId);
     }).then(function(res) {
       var id = res[0];
@@ -111,8 +118,7 @@ contract('TrainingGrid', function(accounts) {
   });
   it("get results count", function() {
     return TrainingGrid.deployed().then(function (instance) {
-      var jobData = {type: 'bytes32', value: addressToArray(config.jobAddress[0])};
-      var jobId = web3utils.soliditySha3(jobData);
+      var jobId = addressToId(config.jobAddress[0]);
       return instance.countResults.call(jobId);
     }).then(function(res) {
       var count = res.toNumber();
@@ -122,8 +128,7 @@ contract('TrainingGrid', function(accounts) {
   });
   it("get results", function() {
     return TrainingGrid.deployed().then(function(instance) {
-      var jobData = {type: 'bytes32', value: addressToArray(config.jobAddress[0])};
-      var jobId = web3utils.soliditySha3(jobData);
+      var jobId = addressToId(config.jobAddress[0]);
       return instance.getResults.call(jobId);
     }).then(function(res) {
       var owner = res[0];
