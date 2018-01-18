@@ -78,8 +78,7 @@ contract('TrainingGrid', function(accounts) {
     return TrainingGrid.deployed().then(function(instance) {
       return instance.countAvailableJobs.call();
     }).then(function(res) {
-      var count = res[0];
-
+      var count = res.toNumber();
       assert.equal(2, count, "Job count should equal 2");
     })
   });
@@ -89,7 +88,7 @@ contract('TrainingGrid', function(accounts) {
     }).then(function(res) {
       var jobId = res[0];
       var experimentId = res[1];
-      var jobAddress = res[2];
+      var jobAddress = arrayToAddress(res[2]);
 
       var experimentData = {type: 'bytes32', value: addressToArray(config.experimentAddress)};
       var jobData = {type: 'bytes32', value: addressToArray(config.jobAddress[0])};
@@ -103,20 +102,20 @@ contract('TrainingGrid', function(accounts) {
     return TrainingGrid.deployed().then(function (instance) {
       return instance.countAvailableJobs.call();
     }).then(function(res) {
-      var count = res[0];
+      var count = res.toNumber();
 
       assert.equal(1, count, "Job count should equal 1");
     })
   });
-  it("sumbit job result", function() {
+  it("sumbit result", function() {
     return TrainingGrid.deployed().then(function(instance) {
       var experimentData = {type: 'bytes32', value: addressToArray(config.experimentAddress)};
       var jobData = {type: 'bytes32', value: addressToArray(config.jobAddress[0])};
 
-      var experimentId = web3utils.soliditySha3(experimentData);
+      //var experimentId = web3utils.soliditySha3(experimentData);
       var jobId = web3utils.soliditySha3(jobData);
       var resultAddress = addressToArray(config.resultAddress);
-      return instance.submitJobResult.call(experimentId, jobId, resultAddress);
+      return instance.submitResult.call(jobId, resultAddress);
     }).then(function(res) {
       // assert
     })
