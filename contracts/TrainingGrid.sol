@@ -25,7 +25,7 @@ contract TrainingGrid {
   mapping(bytes32 => Job) jobs;
   mapping(bytes32 => Experiment) experiments;
 
-  Job[] availableJobs;
+  bytes32[] availableJobIds;
   bytes32[] experimentIds;
 
   function addExperiment(bytes32[] experimentAddress, bytes32[] jobAddresses) public payable {
@@ -71,19 +71,11 @@ contract TrainingGrid {
     job.experimentId = experimentId;
     job.id = keccak256(job.ipfs);
     jobs[job.id] = job;
-    availableJobs.push(job);
+    availableJobIds.push(job.id);
   }
 
-  function countAvailableJobs() constant public returns (uint256 availableJobsCount) {
-    return availableJobs.length;
-  }
-
-  function getAvailableJob() public returns (bytes32, bytes32, bytes32[]) {
-    require(availableJobs.length > 0);
-
-    Job memory job = availableJobs[0];
-    delete availableJobs[0];
-    return (job.id, job.experimentId, job.ipfs);
+  function getAvailableJobIds() public constant returns (bytes32[]) {
+    return availableJobIds;
   }
 
   function addResult(bytes32[] jobAddress, bytes32[] resultAddress) public payable {
@@ -91,8 +83,18 @@ contract TrainingGrid {
     bytes32 jobId = keccak256(jobAddress);
     result.owner = msg.sender;
     result.ipfs = resultAddress;
-
     results[jobId].push(result);
+    completeJob(jobId);
+  }
+
+  function completeJob(bytes32 jobId) internal {
+    // delete assigns 0 to the element (it does not remove it)
+    for (uint i = 0; i < availableJobIds.length; i++) {
+      if (availableJobIds[i] == jobId) {
+        delete availableJobIds[i];
+        break;
+      }
+    }
   }
 
   function countResults(bytes32 jobId) constant public returns (uint256 resultsCount) {

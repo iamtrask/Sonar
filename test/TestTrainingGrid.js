@@ -56,7 +56,7 @@ contract('TrainingGrid', function(accounts) {
     return TrainingGrid.deployed().then(function(instance) {
       return instance.getExperimentIds.call();
     }).then(function(res) {
-      console.log("res", res);
+      assert.equal(res.length, 1, "Experiment count should match");
     });
   });
   it("should get experiment", function() {
@@ -74,39 +74,13 @@ contract('TrainingGrid', function(accounts) {
       assert.equal(experimentAddress, config.experimentAddress, "Address should match");
     });
   });
-  it("get available job count", function() {
+  it("get available job ids", function() {
     return TrainingGrid.deployed().then(function(instance) {
-      return instance.countAvailableJobs.call();
+      return instance.getAvailableJobIds.call();
     }).then(function(res) {
-      var count = res.toNumber();
-      assert.equal(2, count, "Job count should equal 2");
-    })
-  });
-  it("get available job", function() {
-    return TrainingGrid.deployed().then(function(instance) {
-      return instance.getAvailableJob.call();
-    }).then(function(res) {
-      var jobId = res[0];
-      var experimentId = res[1];
-      var jobAddress = arrayToAddress(res[2]);
-
-      var experimentData = {type: 'bytes32', value: addressToArray(config.experimentAddress)};
-      var jobData = {type: 'bytes32', value: addressToArray(config.jobAddress[0])};
-
-      assert.equal(experimentId, web3utils.soliditySha3(experimentData), "Experiment hashed ids should match");
-      assert.equal(jobId, web3utils.soliditySha3(jobData), "Job hashed ids should match");
-      assert.equal(jobAddress, config.jobAddress[0], "Job address should match");
+      assert.equal(res.length, 2, "Job count should match");
     })
   })
-  it("get available job count", function() {
-    return TrainingGrid.deployed().then(function (instance) {
-      return instance.countAvailableJobs.call();
-    }).then(function(res) {
-      var count = res.toNumber();
-
-      assert.equal(1, count, "Job count should equal 1");
-    })
-  });
   it("add result", function() {
     return TrainingGrid.deployed().then(function(instance) {
       var jobAddress = addressToArray(config.jobAddress[0]);
@@ -116,6 +90,13 @@ contract('TrainingGrid', function(accounts) {
       });
     }).then(function(res) {
       // assert
+    })
+  })
+  it("get available job ids", function() {
+    return TrainingGrid.deployed().then(function(instance) {
+      return instance.getAvailableJobIds.call();
+    }).then(function(res) {
+      assert.equal(res.length, 2, "Job count should match");
     })
   })
   it("get results count", function() {
