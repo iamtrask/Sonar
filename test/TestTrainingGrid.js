@@ -85,9 +85,7 @@ contract('TrainingGrid', function(accounts) {
     return TrainingGrid.deployed().then(function(instance) {
       var jobAddress = addressToArray(config.jobAddress[0]);
       var resultAddress = addressToArray(config.resultAddress);
-      return instance.addResult(jobAddress, resultAddress, {
-        value: config.bounty
-      });
+      return instance.addResult(jobAddress, resultAddress, {});
     }).then(function(res) {
       // assert
     })

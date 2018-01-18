@@ -41,15 +41,15 @@ contract TrainingGrid {
     addJobs(experiment.id, jobAddresses);
   }
 
-  function countExperiments() constant public returns (uint256 experimentCount) {
+  function countExperiments() public view returns (uint256 experimentCount) {
     return experimentIds.length;
   }
 
-  function getExperimentIds() constant public returns (bytes32[]) {
+  function getExperimentIds() public view returns (bytes32[]) {
     return experimentIds;
   }
 
-  function getExperiment(bytes32[] experimentAddress) public constant returns (bytes32, address, uint, bytes32[]) {
+  function getExperiment(bytes32[] experimentAddress) public view returns (bytes32, address, uint, bytes32[]) {
     Experiment memory experiment;
     bytes32 id = keccak256(experimentAddress);
     experiment = experiments[id];
@@ -74,7 +74,7 @@ contract TrainingGrid {
     availableJobIds.push(job.id);
   }
 
-  function getAvailableJobIds() public constant returns (bytes32[]) {
+  function getAvailableJobIds() public view returns (bytes32[]) {
     return availableJobIds;
   }
 
@@ -97,11 +97,11 @@ contract TrainingGrid {
     }
   }
 
-  function countResults(bytes32 jobId) constant public returns (uint256 resultsCount) {
+  function countResults(bytes32 jobId) public view returns (uint256 resultsCount) {
     return results[jobId].length;
   }
 
-  function getResults(bytes32 jobId) constant public returns (address, bytes32[]) {
+  function getResults(bytes32 jobId) public view returns (address, bytes32[]) {
     Result[] memory jobResults = results[jobId];
     Result memory result = jobResults[0];
     return (result.owner, result.ipfs);
