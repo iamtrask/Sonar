@@ -74,6 +74,11 @@ contract TrainingGrid {
     availableJobIds.push(job.id);
   }
 
+  function getJob(bytes32 jobId) public view returns (bytes32, bytes32, bytes32[]) {
+    Job memory job = jobs[jobId];
+    return (job.id, job.experimentId, job.ipfs);
+  }
+  
   function getAvailableJobIds() public view returns (bytes32[]) {
     return availableJobIds;
   }

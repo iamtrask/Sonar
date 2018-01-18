@@ -97,6 +97,18 @@ contract('TrainingGrid', function(accounts) {
       assert.equal(res.length, 2, "Job count should match");
     })
   })
+  it("should get job", function() {
+    return TrainingGrid.deployed().then(function(instance) {
+      var jobAddress = addressToArray(config.jobAddress[0]);
+      var jobId = web3utils.soliditySha3({type: 'bytes32', value: jobAddress})
+      return instance.getJob.call(jobId);
+    }).then(function(res) {
+      var id = res[0];
+      var experimentId = res[1];
+      var jobAddress = arrayToAddress(res[2]);
+      assert.equal(jobAddress, config.jobAddress[0], "Address should match");
+    });
+  });
   it("get results count", function() {
     return TrainingGrid.deployed().then(function (instance) {
       var jobData = {type: 'bytes32', value: addressToArray(config.jobAddress[0])};
