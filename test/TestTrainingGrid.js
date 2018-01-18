@@ -109,15 +109,27 @@ contract('TrainingGrid', function(accounts) {
   });
   it("sumbit result", function() {
     return TrainingGrid.deployed().then(function(instance) {
-      var experimentData = {type: 'bytes32', value: addressToArray(config.experimentAddress)};
       var jobData = {type: 'bytes32', value: addressToArray(config.jobAddress[0])};
 
-      //var experimentId = web3utils.soliditySha3(experimentData);
       var jobId = web3utils.soliditySha3(jobData);
       var resultAddress = addressToArray(config.resultAddress);
       return instance.submitResult.call(jobId, resultAddress);
     }).then(function(res) {
       // assert
+    })
+  })
+  it("get result", function() {
+    return TrainingGrid.deployed().then(function(instance) {
+      var jobData = {type: 'bytes32', value: addressToArray(config.jobAddress[0])};
+
+      var jobId = web3utils.soliditySha3(jobData);
+      return instance.getResults.call(jobId);
+    }).then(function(res) {
+      var owner = res[0];
+      var resultAddress = res[1];
+
+      assert.equal(owner, accounts[0]);
+      assert.equal(config.resultAddress, arrayToAddress(resultAddress));
     })
   })
 });
