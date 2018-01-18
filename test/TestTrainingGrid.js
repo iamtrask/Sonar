@@ -17,10 +17,11 @@ function addressToArray (ipfsAddress) {
 
 var config = {
   experimentAddress: 'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUk',
-  weightsAddress: [
-                    'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUk',
-                    'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUk'
-                  ],
+  jobAddress: [
+                'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUk',
+                'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUk'
+              ],
+  resultAddress: 'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUk',
   bounty: 100
 };
 
@@ -28,15 +29,15 @@ contract('TrainingGrid', function(accounts) {
   it("should add a new experiment", function() {
     return TrainingGrid.deployed().then(function(instance) {
       var experimentAddress = addressToArray(config.experimentAddress);
-      var weightAddresses = Array();
+      var jobAddresses = Array();
 
-      for(var i = 0; i < config.weightsAddress.length; i++) {
-        var array = addressToArray(config.weightsAddress[i]);
-        var k = web3utils.soliditySha3({type: 'bytes32', value: array});
-        weightAddresses.push(k);
+      for(var i = 0; i < config.jobAddress.length; i++) {
+        var array = addressToArray(config.jobAddress[i]);
+        jobAddresses.push(array[0]);
+        jobAddresses.push(array[1]);
       }
 
-      return instance.addExperiment(experimentAddress, weightAddresses, {
+      return instance.addExperiment(experimentAddress, jobAddresses, {
         value: config.bounty
       });
     }).then(function() {
@@ -73,4 +74,51 @@ contract('TrainingGrid', function(accounts) {
       assert.equal(experimentAddress, config.experimentAddress, "Address should match");
     });
   });
+  it("get available job count", function() {
+    return TrainingGrid.deployed().then(function(instance) {
+      return instance.countAvailableJobs.call();
+    }).then(function(res) {
+      var count = res[0];
+
+      assert.equal(2, count, "Job count should equal 2");
+    })
+  });
+  it("get available job", function() {
+    return TrainingGrid.deployed().then(function(instance) {
+      return instance.getAvailableJob.call();
+    }).then(function(res) {
+      var jobId = res[0];
+      var experimentId = res[1];
+      var jobAddress = res[2];
+
+      var experimentData = {type: 'bytes32', value: addressToArray(config.experimentAddress)};
+      var jobData = {type: 'bytes32', value: addressToArray(config.jobAddress[0])};
+
+      assert.equal(experimentId, web3utils.soliditySha3(experimentData), "Experiment hashed ids should match");
+      assert.equal(jobId, web3utils.soliditySha3(jobData), "Job hashed ids should match");
+      assert.equal(jobAddress, config.jobAddress[0], "Job address should match");
+    })
+  })
+  it("get available job count", function() {
+    return TrainingGrid.deployed().then(function (instance) {
+      return instance.countAvailableJobs.call();
+    }).then(function(res) {
+      var count = res[0];
+
+      assert.equal(1, count, "Job count should equal 1");
+    })
+  });
+  it("sumbit job result", function() {
+    return TrainingGrid.deployed().then(function(instance) {
+      var experimentData = {type: 'bytes32', value: addressToArray(config.experimentAddress)};
+      var jobData = {type: 'bytes32', value: addressToArray(config.jobAddress[0])};
+
+      var experimentId = web3utils.soliditySha3(experimentData);
+      var jobId = web3utils.soliditySha3(jobData);
+      var resultAddress = addressToArray(config.resultAddress);
+      return instance.submitJobResult.call(experimentId, jobId, resultAddress);
+    }).then(function(res) {
+      // assert
+    })
+  })
 });
