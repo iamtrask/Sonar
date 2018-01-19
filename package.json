@@ -8,7 +8,7 @@
     "develop": "truffle develop",
     "compile": "truffle compile",
     "migrate": "truffle migrate",
-    "test": "truffle test --network=test",
+    "test": "truffle test test/TestTrainingGrid.js --network=test",
     "postinstall": "npm run compile"
   },
   "repository": {
@@ -26,7 +26,8 @@
   },
   "homepage": "https://github.com/OpenMined/Sonar#readme",
   "dependencies": {
-    "truffle": "^4.0.4"
+    "truffle": "^4.0.4",
+    "web3-utils": "^1.0.0-beta.28"
   },
   "devDependencies": {
     "solium": "^1.0.0",

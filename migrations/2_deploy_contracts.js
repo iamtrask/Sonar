@@ -1,5 +1,5 @@
-var ModelRepository = artifacts.require('./ModelRepository.sol')
+var TrainingGrid = artifacts.require('./TrainingGrid.sol')
 
 module.exports = function (deployer) {
-  deployer.deploy(ModelRepository)
+  deployer.deploy(TrainingGrid)
 }
