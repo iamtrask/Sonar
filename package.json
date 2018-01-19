@@ -8,7 +8,7 @@
     "develop": "truffle develop",
     "compile": "truffle compile",
     "migrate": "truffle migrate",
-    "test": "truffle test test/TestTrainingGrid.js",
+    "test": "truffle test test/TestTrainingGrid.js --network=test",
     "postinstall": "npm run compile"
   },
   "repository": {
