@@ -24,12 +24,12 @@ function arrayToId (ipfsArray) {
 }
 
 var config = {
-  experimentAddress: 'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUk',
+  experimentAddress: 'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUA',
   jobAddress: [
-                'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUk',
-                'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUk'
+                'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUB',
+                'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUC'
               ],
-  resultAddress: 'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUk',
+  resultAddress: 'QmNqVVej89i1xDGDgiHZzXbiX9RypoFGFEGHgWqeZBRaUD',
   bounty: 100
 };
 
@@ -69,17 +69,15 @@ contract('TrainingGrid', function(accounts) {
   });
   it("should get experiment", function() {
     return TrainingGrid.deployed().then(function(instance) {
-      var experimentAddress = addressToArray(config.experimentAddress);
-      return instance.getExperiment.call(experimentAddress);
+      var experimentId = addressToId(config.experimentAddress);
+      return instance.getExperiment.call(experimentId);
     }).then(function(res) {
-      var id = res[0];
+      var experimentAddress = arrayToAddress(res[0]);
       var owner = res[1];
       var bounty = res[2].toNumber();
-      var experimentAddress = arrayToAddress(res[3]);
-      assert.equal(id, arrayToId(res[3]));
+      assert.equal(experimentAddress, config.experimentAddress, "Address should match");
       assert.equal(owner, accounts[0], "Owner should match");
       assert.equal(bounty, config.bounty, "Bounty should match");
-      assert.equal(experimentAddress, config.experimentAddress, "Address should match");
     });
   });
   it("get available job ids", function() {
@@ -110,10 +108,10 @@ contract('TrainingGrid', function(accounts) {
       var jobId = addressToId(config.jobAddress[0]);
       return instance.getJob.call(jobId);
     }).then(function(res) {
-      var id = res[0];
-      var experimentId = res[1];
-      var jobAddress = arrayToAddress(res[2]);
-      assert.equal(jobAddress, config.jobAddress[0], "Address should match");
+      var jobAddress = arrayToAddress(res[0]);
+      var experimentAddress = arrayToAddress(res[1]);
+      assert.equal(jobAddress, config.jobAddress[0], "Job address should match");
+      assert.equal(experimentAddress, config.experimentAddress, "Experiment address should match");
     });
   });
   it("get results count", function() {
@@ -131,10 +129,10 @@ contract('TrainingGrid', function(accounts) {
       var jobId = addressToId(config.jobAddress[0]);
       return instance.getResults.call(jobId);
     }).then(function(res) {
-      var owner = res[0];
-      var resultAddress = res[1];
-      assert.equal(owner, accounts[0]);
+      var resultAddress = res[0];
+      var owner = res[1];
       assert.equal(config.resultAddress, arrayToAddress(resultAddress));
+      assert.equal(owner, accounts[0]);
     })
   })
 });

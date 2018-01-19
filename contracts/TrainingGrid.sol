@@ -18,7 +18,6 @@ contract TrainingGrid {
     address owner;
     uint bounty;
     bytes32[] ipfs;
-    bytes32[] jobs;
   }
 
   mapping(bytes32 => Result[]) results;
@@ -49,11 +48,10 @@ contract TrainingGrid {
     return experimentIds;
   }
 
-  function getExperiment(bytes32[] experimentAddress) public view returns (bytes32, address, uint, bytes32[]) {
+  function getExperiment(bytes32 experimentId) public view returns (bytes32[], address, uint) {
     Experiment memory experiment;
-    bytes32 id = keccak256(experimentAddress);
-    experiment = experiments[id];
-    return (id, experiment.owner, experiment.bounty, experiment.ipfs);
+    experiment = experiments[experimentId];
+    return (experiment.ipfs, experiment.owner, experiment.bounty);
   }
 
   function addJobs(bytes32 experimentId, bytes32[] jobAddresses) internal {
@@ -74,11 +72,12 @@ contract TrainingGrid {
     availableJobIds.push(job.id);
   }
 
-  function getJob(bytes32 jobId) public view returns (bytes32, bytes32, bytes32[]) {
+  function getJob(bytes32 jobId) public view returns (bytes32[], bytes32[]) {
     Job memory job = jobs[jobId];
-    return (job.id, job.experimentId, job.ipfs);
+    Experiment memory experiment = experiments[job.experimentId];
+    return (job.ipfs, experiment.ipfs);
   }
-  
+
   function getAvailableJobIds() public view returns (bytes32[]) {
     return availableJobIds;
   }
@@ -106,9 +105,9 @@ contract TrainingGrid {
     return results[jobId].length;
   }
 
-  function getResults(bytes32 jobId) public view returns (address, bytes32[]) {
+  function getResults(bytes32 jobId) public view returns (bytes32[], address) {
     Result[] memory jobResults = results[jobId];
     Result memory result = jobResults[0];
-    return (result.owner, result.ipfs);
+    return (result.ipfs, result.owner);
   }
 }
