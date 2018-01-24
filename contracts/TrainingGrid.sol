@@ -107,7 +107,15 @@ contract TrainingGrid {
 
   function getResults(bytes32 jobId) public view returns (bytes32[], address) {
     Result[] memory jobResults = results[jobId];
-    Result memory result = jobResults[0];
-    return (result.ipfs, result.owner);
+
+    if(jobResults.length > 0) {
+      Result memory result = jobResults[0];
+
+      return (result.ipfs, result.owner);
+    } else {
+      bytes32[] memory a = new bytes32[](1);
+      address b = 0x0000;
+      return (a, b);
+    }
   }
 }
